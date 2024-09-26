@@ -1,0 +1,125 @@
+<!--
+Functionality
+Get member list
+Arrange member list around table/podium
+Raise motion -> object motion -> vote on motion
+first user to raise motion will raise their motion and prevent other motions from being raised
+both the user who raised the motion and the meeting host will have the option to withdraw the motion
+Once user raises their motion, they will be allowed to describe their motion, no one else will be allowed to talk
+After user finishes, others will be allowed to object to the motion
+Once all objections are made, all users will vote
+Motion will move to accepted motions or rejected motions list depending on vote
+
+Objects
+    Meeting object
+        - variables
+            - # of members
+            - host / chairman
+            - acceptedMotions
+            - rejectedMotions
+            - 
+        - functions
+            - start
+            - end
+
+    Motion
+        - variables
+            - objections
+            - votes
+            - isAccepted
+        - functions
+            -
+
+    Member
+        - variables
+            - hasVoted
+            - motion
+            - objection
+            - username
+            - profilePhoto
+        - functions
+            - vote
+            - raise
+            - object
+            - 
+
+    Host / chairman - child of member
+
+    meetingHistory
+        - variables
+            - raisedMotions
+            - acceptedMotions
+            - rejectedMotions
+
+Other
+    open in new tab
+    light/dark mode
+    side chat box
+    Once meeting ends, meetingHistory object generated
+    meetingHistory will show raised motions, accepted motions, rejected motions, the members, and duration of the meeting
+
+-->
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" 
+            content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../assets/css/meetingRoom.css">
+        <script src="../scripts/meetingRoom.js" defer></script>
+    </head>
+
+    <body>
+        <header id="topBar">
+            <!--<img src="../assets/images/group4.png" height="70px" style="padding: 0px 20px;">
+            <div id="login">
+                <a href="#">Login</a>
+                <img src="../assets/images/Default_pfp.png" height="50px">
+            </div>-->
+        </header>
+        
+        <div id="flexMain">
+            <div id="members">
+                <div id="memberList">
+                    <div class="member">
+                        <img src="../assets/images/Default_pfp.png" height="50px">
+                        <p>Member</p>
+                    </div>
+
+                    <div class="member">
+                        <img src="../assets/images/Default_pfp.png" height="50px">
+                        <p>Member</p>
+                    </div>
+
+                    <div class="member">
+                        <img src="../assets/images/Default_pfp.png" height="50px">
+                        <p>Member</p>
+                    </div>
+
+                    <div class="member">
+                        <img src="../assets/images/Default_pfp.png" height="50px">
+                        <p>Member</p>
+                    </div>
+                </div>
+                
+                <button id="toggleMembers">
+                    <img src="../assets/images/member.png" height="50px">
+                </button>
+            </div>
+
+            <div id="meetingRoom">
+
+            </div>
+
+            <div id="chatBox">
+
+            </div>
+        </div>
+
+        <footer id="footer">
+
+        </footer>
+    </body>
+</html>

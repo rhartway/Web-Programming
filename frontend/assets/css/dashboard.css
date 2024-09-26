@@ -1,0 +1,15 @@
+* {
+    margin: 0;
+}
+
+#topBar {
+    background-color: silver;
+}
+
+#buttonList {
+
+}
+
+#roomSelect {
+    display: flex;
+}

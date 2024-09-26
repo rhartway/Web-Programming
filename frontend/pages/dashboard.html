@@ -1,0 +1,74 @@
+<!--
+dashboard statistics / buttons
+    - scheduled meetings
+    - make new meeting
+    - past meetings
+    - profile
+
+Side panel
+    - dashboard
+    - about
+    - contact
+-->
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" 
+            content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../assets/css/dashboard.css">
+    </head>
+
+    <body>
+        <header id="topBar">
+            header
+        </header>
+
+        <div id="buttonsList">
+
+        </div>
+
+        <div id="mainFlex">
+            <div id="sidePanel">
+                <!--<button id="side-panel-toggle">
+                    
+                </button>-->
+                <div id="side-panel-content">
+                    <a href="#">Dashboard</a>
+                </div>
+            </div>
+
+            <div id="mainBoard">
+                <div id="buttonList">
+                    <button id="scheduled" class="dashboardButton">
+                        Scheduled Meetings
+                    </button>
+                    <button id="new" class="dashboardButton">
+                        Create New Meeting
+                    </button>
+                    <button id="past" class="dashboardButton">
+                        Past Meetings
+                    </button>
+                    <button id="profile" class="dashboardButton">
+                        Profile
+                    </button>
+                </div>
+
+                <div id="newMeetingPanels" class="dashboardPanels">
+                    <div id="roomSelect">
+                        <input type="radio" value="roundTable" id="roundTable" name="meetingRoomSelect">
+                        <label for="roundTable">round table</label>
+
+                        <input type="radio" value="podium" id="podium" name="meetingRoomSelect">
+                        <label for="podium">podium</label>
+
+                        <input type="radio" value="classroom" id="classroom" name="meetingRoomSelect">
+                        <label for="roundTable">classroom</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

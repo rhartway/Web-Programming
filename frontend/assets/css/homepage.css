@@ -1,0 +1,8 @@
+* {
+    margin: 0;
+}
+
+#topBar {
+    background-color: silver;
+    height: 40%;
+}
