@@ -1,0 +1,56 @@
+.column {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    align-items: center;
+    margin-top: 5%;
+}
+
+.committee-link {
+    width: 80%;
+    height: 40%;
+    margin: auto;
+    border-color: white;
+    border-style: solid;
+    text-align: center;
+    align-items: center;
+}
+
+.link {
+    font-size: 96px;
+    vertical-align: auto;
+}
+
+html {
+    background-color: #1a1a21 !important;
+    margin: 2em;
+    font-size: 100%;
+}
+
+body {
+    color: #cad4da;
+    font-family: monospace;
+    /*display: flex; */
+    text-align: center;
+    padding-top: 1em;
+    font-size: 20px;
+}
+
+a {
+    color: #cad4da;
+    -o-transition:color .2s ease-out, background 1s ease-in;
+    -ms-transition:color .2s ease-out, background 1s ease-in;
+    -moz-transition:color .2s ease-out, background 1s ease-in;
+    -webkit-transition:color .2s ease-out, background 1s ease-in;
+    transition:color .2s ease-out, background 1s ease-in;
+}
+
+a:hover {
+    color: pink;
+}
+
+
+::selection {
+    color: #edeef0;
+    background: rgb(171, 14, 106);
+  }
