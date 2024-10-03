@@ -89,3 +89,33 @@ a:hover {
     margin-left: auto;
     background-color: darkred;
 }
+
+.create-committee{
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    align-items: center;
+}
+
+.fixed-header thead{
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.header th{
+    border-style: solid;
+    font-weight: bold;
+    padding: 10px;
+}
+
+.scrollable {
+    overflow-y: scroll;
+    max-height: 75%;
+}
+
+.submit-committee{
+    background-color: green;
+    color:#cad4da;
+    float: right;
+}
