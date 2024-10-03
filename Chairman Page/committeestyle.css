@@ -10,13 +10,13 @@
     width: 80%;
     height: 40%;
     margin: auto;
-    border-color: white;
+    border-color: #cadfda;
     border-style: solid;
     text-align: center;
     align-items: center;
 }
 
-.link {
+.major-link {
     font-size: 96px;
     vertical-align: auto;
 }
@@ -53,4 +53,69 @@ a:hover {
 ::selection {
     color: #edeef0;
     background: rgb(171, 14, 106);
-  }
+}
+
+.footer {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0;
+    justify-content: space-between;
+}
+
+.navigation{
+    width: 5em;
+    height: 5em;
+    border-color: #cad4da;
+    background-color: #1a1a21;
+    color: #cad4da;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1em;
+}
+
+.navigation:hover{
+    background-color: rgb(171, 14, 106);
+}
+
+.navigation .settings{
+    margin-right: auto;
+}
+
+.navigation .back{
+    margin-left: auto;
+    background-color: darkred;
+}
+
+.create-committee{
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    align-items: center;
+}
+
+.fixed-header thead{
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.header th{
+    border-style: solid;
+    font-weight: bold;
+    padding: 10px;
+}
+
+.scrollable {
+    overflow-y: scroll;
+    max-height: 75%;
+}
+
+.submit-committee{
+    background-color: green;
+    color:#cad4da;
+    float: right;
+}
