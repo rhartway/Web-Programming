@@ -185,11 +185,21 @@ body {
 }
 
 
-
 ::selection {
     color: #edeef0;
     background: rgb(171, 14, 106);
   }
+
+/*dashboard page*/
+.dash-buttons{
+  padding: 14px 40px;
+  margin:20px;
+  background-color: #2f2f36;
+  color: #3698c9;
+  font-family: monospace;
+  border-color: #3698c9;
+  
+}
 
 
 
