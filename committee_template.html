@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <title>Dashboard</title>
+</head>
+
+<body>
+
+    <div class = "menubar"
+            <a href="dashboard.html">Home</a>
+            <a href = "dashboard.html">Meeting Rooms</a>
+            <a href = "current_motions.html">Current Motions</a>
+            <a href = "dashboard.html">Past Motions</a>
+    </div>
+
+    <div class = "committee_header">
+        Committee Name
+    </div>
+
+    <div class = "committee_body">
+
+        <div class = grid_item>
+            <div class = "team_list">
+                <h2>Project Members</h2>
+                <input type="search" id="searchInput" placeholder="Find Members">
+                <div class="members" id="membersList"></div>
+            </div>
+        </div>
+
+        <div class = "grid_item">
+            temp
+        </div>
+
+        <div class = "grid_item">
+            <div class = "table">
+                <table id="data_table" class="display" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Motion</th>
+                            <th>Description</th>
+                            <th>Creator</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                
+                    <tbody>
+                        <tr>
+                            <td>Add more stuff to site</td>
+                            <td>add more stuff like idk colors and games to page whatever</td>
+                            <td><a href="#persons_page" target = "_blank">John B</a></td>
+                            <td>10/05/2023</td> <!-- change this to date format thing later-->
+                        </tr>
+        
+                        <tr>
+                            <td>delete ceo</td>
+                            <td>don't like him</td>
+                            <td><a href="#persons_page" target = "_blank">Aaron Ville</a></td>
+                            <td>10/02/2023</td> <!-- change this to date format thing later-->
+                        </tr>
+                    </tbody>
+        
+                    <tfoot>
+                        <tr>
+                            <th>Motion</th>
+                            <th>Description</th>
+                            <th>Creator</th>
+                            <th>Date</th>
+                        </tr>
+                    </tfoot>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- stuff for mem list-->
+    <script>
+        const members = [
+            {
+                name: 'Luffy Onepiece',
+                email: 'luffy@mail.com',
+                role: 'Lead',
+                image: 'https://avatarfiles.alphacoders.com/364/364538.png'
+            },
+            {
+                name: 'Luffy Onepiece',
+                email: 'luffy@mail.com',
+                role: 'Lead',
+                image: 'https://avatarfiles.alphacoders.com/364/364538.png'
+            },
+            {
+                name: 'Luffy Onepiece',
+                email: 'luffy@mail.com',
+                role: 'Lead',
+                image: 'https://avatarfiles.alphacoders.com/364/364538.png'
+            },
+            {
+                name: 'Luffy Onepiece',
+                email: 'luffy@mail.com',
+                role: 'Lead',
+                image: 'https://avatarfiles.alphacoders.com/364/364538.png'
+            },
+            {
+                name: 'Luffy Onepiece',
+                email: 'luffy@mail.com',
+                role: 'Lead',
+                image: 'https://avatarfiles.alphacoders.com/364/364538.png'
+            },
+            {
+                name: 'Luffy Onepiece',
+                email: 'luffy@mail.com',
+                role: 'Lead',
+                image: 'https://avatarfiles.alphacoders.com/364/364538.png'
+            },
+            {
+                name: 'Luffy Onepiece',
+                email: 'luffy@mail.com',
+                role: 'Lead',
+                image: 'https://avatarfiles.alphacoders.com/364/364538.png'
+            },
+            {
+                name: 'Luffy Onepiece',
+                email: 'luffy@mail.com',
+                role: 'Lead',
+                image: 'https://avatarfiles.alphacoders.com/364/364538.png'
+            },
+            {
+                name: 'Skarner',
+                email: 'skarner@mail.com',
+                role: 'Developer',
+                image: 'https://static.wikia.nocookie.net/super-arc-bros-brawl/images/5/50/Skarner.png/revision/latest?cb=20230909080411'
+            },
+            {
+                name: 'Luffy Onepiece',
+                email: 'luffy@mail.com',
+                role: 'Lead',
+                image: 'https://avatarfiles.alphacoders.com/364/364538.png'
+            },
+            {
+                name: 'William Johnson',
+                email: 'william.johnson@mail.com',
+                role: 'Designer',
+                image: 'https://images.pexels.com/photos/10311994/pexels-photo-10311994.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+            },
+            {
+                name: 'Luffy Onepiece',
+                email: 'luffy@mail.com',
+                role: 'Lead',
+                image: 'https://avatarfiles.alphacoders.com/364/364538.png'
+            }
+        ];
+
+        const membersList = document.getElementById('membersList');
+        const searchInput = document.getElementById('searchInput');
+
+        function displayMembers(members) {
+            membersList.innerHTML = '';
+            if (members.length === 0) {
+                membersList.innerHTML = '<p class="not-found">No Members Found</p>';
+            } else {
+                members.forEach(member => {
+                    const memberElement = document.createElement('div');
+                    memberElement.className = 'member';
+                    memberElement.innerHTML = `
+                        <div class="image">
+                            <img src="${member.image}" alt="">
+                        </div>
+                        <div class="name">
+                            <p>${member.name}</p>
+                            <span>${member.email}</span>
+                        </div>
+                        <div class="role">${member.role}</div>
+                    `;
+                    membersList.appendChild(memberElement);
+                });
+            }
+        }
+
+        searchInput.addEventListener('input', () => {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filteredMembers = members.filter(member =>
+                member.name.toLowerCase().includes(searchTerm) ||
+                member.email.toLowerCase().includes(searchTerm) ||
+                member.role.toLowerCase().includes(searchTerm)
+            );
+            displayMembers(filteredMembers);
+        });
+
+        // Initial display of members
+        displayMembers(members);
+    </script>
+
+
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+<script src="app.js"></script>
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
