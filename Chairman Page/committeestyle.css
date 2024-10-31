@@ -97,6 +97,13 @@ a:hover {
     align-items: center;
 }
 
+.modify-committee{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1em;
+}
+
 .fixed-header thead{
     position: sticky;
     top: 0;
