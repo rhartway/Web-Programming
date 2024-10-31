@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <script src="modals.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="style.css">
@@ -18,9 +19,48 @@
         </div>
 
         <div class = "content">
-            <button class="dash-buttons" type="button">New Commitee</button>
-            <button class="dash-buttons" type="button">Join Commitee</button>
+            <button class="dash-buttons" onclick="openModal('modalNewCommittee')">New Committee</button>
+            <button class="dash-buttons" onclick="openModal('modalJoinCommittee')">Join Committee</button>
         </div>
+
+        <div id="modalNewCommittee" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('modalNewCommittee')">&times;</span>
+                <h2>Create New Committee</h2>
+        
+                <!-- Form to enter committee name -->
+                <form id="createCommitteeForm">
+                    <label for="committeeName">Committee Name:</label>
+                    <input type="text" id="committeeName" name="committeeName" required>
+        
+                    <!-- Input for inviting users -->
+                    <label for="inviteUser">Invite User:</label>
+                    <input type="text" id="inviteUser" placeholder="Enter username" required>
+                    <button type="button" id="addUserButton">Add User</button>
+        
+                    <!-- List to display invited users -->
+                    <ul id="userList"></ul>
+        
+                    <button type="submit">Create Committee</button>
+                </form>
+            </div>
+        </div>
+        
+        
+        
+        <div id="modalJoinCommittee" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('modalJoinCommittee')">&times;</span>
+                <div class="join-modal-header"><h2>Join Committee</h2></div>
+                <form id="joinCommitteeForm">
+                    <label for="committeeId">Enter Committee ID:</label>
+                    <input class="modal-input" type="text" id="committeeId" name="committeeId" required>
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+        
+        
 
 
         
