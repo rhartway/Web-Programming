@@ -19,24 +19,24 @@
             <form action="#">
                 <div class="input_box">
                     <span class="icon"></span>
-                    <input type="Username" placeholder="Username" required>
+                    <input type="text" id = "username" placeholder="Username" required>
                     <!-- <label>Username</label> -->
                 </div>
                 <div class="input_box">
                     <span class="icon"></span>
-                    <input type="password" placeholder="Password" required>
+                    <input type="password" id="password" placeholder="Password" required>
                     <!-- <label>Password</label> -->
                 </div>
                 <div class = "remember-forgot">
                     <label><input type = "checkbox">Remember Me</label>
                 </div>
                 <div class ="button_container">
-                    <button class = "btn">Login</button>
+                    <button id="login_btn" class = "btn">Login</button>
                 </div>
 
                 <div class = "link_container">
-                    <a href="#">Forgot Password</a>
-                    <a href="#">Sign Up</a>
+                    <a href="register.html">Sign Up</a>
+                    <a href="forgot_password.html">Forgot Password</a>
                 </div>
                 
 
@@ -51,7 +51,7 @@
         
     </div>
 
-    <script src="../script/script.js"></script>
+    <script src="../script/script.js" defer></script>
     
 </body>
 </html>
