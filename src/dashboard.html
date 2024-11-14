@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <script src="modals.js"></script>
+    <script src="../script/modals.js"></script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="../css/style.css" />
@@ -11,7 +11,7 @@
   <body>
     <div class="menubar">
       <a class="active" href="dashboard.html">Home</a>
-      <a href="dashboard.html">Meeting Rooms</a>
+      <a href="Committee design.html">Committees</a>
       <a href="current_motions.html">Current Motions</a>
       <a href="dashboard.html">Past Motions</a>
     </div>
@@ -35,12 +35,7 @@
         <!-- Form to enter committee name -->
         <form id="createCommitteeForm">
           <label for="committeeName">Committee Name:</label>
-          <input
-            type="text"
-            id="committeeName"
-            name="committeeName"
-            placeholder="Enter Commitee Name"
-          />
+          <input type="text" id="committeeName" name="committeeName" required />
 
           <!-- Input for inviting users -->
           <label for="inviteUser">Invite User:</label>
@@ -73,7 +68,6 @@
             type="text"
             id="committeeId"
             name="committeeId"
-            placeholder="Enter Commitee ID"
             required
           />
           <button type="submit">Submit</button>
