@@ -78,7 +78,13 @@ header {
     outline: none;
 }
 
-
+.input_box i {
+    position: absolute;
+    right: 10px; 
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer; 
+}
 
 .input_box input:focus~label,
 .input_box input:valid~label {
