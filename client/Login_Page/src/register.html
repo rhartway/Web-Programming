@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
     <link rel="stylesheet" href ="../css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 <body>
 
@@ -39,8 +40,10 @@
                 </div>
                 <div class="input_box">
                     <span class="icon"></span>
-                    <input type="password" placeholder="Password" name="password" required>
-                    <!-- <label>Password</label> -->
+                    <input type="password" id="password" placeholder="Password" name="password" required>
+                    <span onclick="showPassword_1()">
+                        <i class ="fa-regular fa-eye" id=""togglePassword></i>
+                    </span>
                 </div>
                 <div class = "remember-forgot">
                     <label><input type = "checkbox">Remember Me</label>
