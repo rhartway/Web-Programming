@@ -16,15 +16,15 @@
     <div class ="login_page">
         <div class ="form-box_login">
             <h2>Login</h2>
-            <form action="#">
+            <form action="http://localhost:8080/login" method="POST" id="loginForm">
                 <div class="input_box">
                     <span class="icon"></span>
-                    <input type="text" id = "username" placeholder="Username" required>
+                    <input type="text" id = "username" placeholder="Username" name="username" required>
                     <!-- <label>Username</label> -->
                 </div>
                 <div class="input_box">
                     <span class="icon"></span>
-                    <input type="password" id="password" placeholder="Password" required>
+                    <input type="password" id="password" placeholder="Password" name="password" required>
                     <!-- <label>Password</label> -->
                 </div>
                 <div class = "remember-forgot">

@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import { getUser, makeUser } from './database.js';
 import bodyParser from 'body-parser';
+import token from 'jsonwebtoken'
 
 
 
@@ -32,32 +33,52 @@ app.use(cors({origin: "http://127.0.0.1:5500"}));
  * add to database in order: username, password, user object
  */
 app.post("/register", (req, res) => {
-    const {username, password} = req.body;
-    res.status(200).send("OK");
-    makeUser(username,password);
-
-
+    const {fname, lname, username, password,email} = req.body;
+    makeUser(fname,lname,username,password,email);
+    res.status(200).send({
+        message: "Registration successful",
+        redirect: "http://127.0.0.1:5500/client/index.html"
+    });
 });
 
-/**
- * When retrieving users
- * Check if user exists
- */
-app.get("/login", (req, res) => {
-    const { user, password } = req.body;
 
-    if (!(getUser(username, password))) {
+
+// User authentication
+app.post("/login", (req, res) => {
+    const { username, password } = req.body;
+
+    //const result = await getUser(username, password);
+
+    if (!getUser(username, password)) {
         res.status(401).send("User not found or password incorrect");
     }
     else {
-        res.status(200).send("Welcome!");
+        // redirect to home page
+        res.status(200).send({
+            message: "Successful login",
+            redirect: "http://127.0.0.1:5500/client/index.html"
+        });
     }
+    
+
 });
 
 // Update Profile
 app.put("/profile/update", (req, res) => {
 
 });
+
+// Delete user
+
+// Create committee
+
+// Join committee
+
+// Create motion
+
+// Delete motion
+
+//
 
 // Create + Join + Delete Meeting Room
 

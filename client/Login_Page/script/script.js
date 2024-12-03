@@ -1,4 +1,4 @@
-
+const server = "http://localhost:8080";
 
 // Get the current directory name (with ESM)
 
@@ -47,12 +47,32 @@ if (window.location.pathname.includes("index.html")) {
     // Code specific to index.html
     const loginButton = document.querySelector("#login_btn");
     if (loginButton) {
-        loginButton.addEventListener('click', (event) => {
+        loginButton.addEventListener('click', async (event) => {
             alert("Login button has been clicked");
             // console.log(presetPassword);
             // event.preventDefault();
             // const enteredUsername = document.querySelector("#username").value;
             // const enteredPassword = document.querySelector("#password").value;
+            const response = await fetch(`${server}/login`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                username: `${document.getElementById("username").value}`,
+                password: `${document.getElementById("password").value}`
+            });
+        
+            if (response.ok) {
+                // redirect to home page with user info
+                
+            }
+            else {
+                var errorCode = document.createElement("p");
+                errorCode.textContent = "The user is not found or the password is incorrect. Please try again.";
+                errorCode.style.color = "red";
+
+                document.getElementById("loginForm").appendChild(errorCode);
+            }
             
 
             // if (checkUsers(filePath, enteredUsername, enteredPassword)) {
@@ -75,9 +95,9 @@ if (window.location.pathname.includes("index.html")) {
         });
     }
 } else if (window.location.pathname.includes("forgot_password.html")) {
-    const passwrodButton = document.querySelector("#password_btn");
-    if (passwrodButton) {
-        passwrodButton.addEventListener('click', () => {
+    const passwordButton = document.querySelector("#password_btn");
+    if (passwordButton) {
+        passwordButton.addEventListener('click', () => {
             alert("Password button has been clicked");
         });
     }

@@ -54,29 +54,41 @@ async function connectAndQuery() {
 }
 
 export async function getUser(username, enteredPassword) {
-    var poolConnection = await mssql.connect(config);
+    var poolConnection = await mssql.connect(config);  
     try {
         // check if username in table
         var getUserRow = await poolConnection.request().query(`SELECT * FROM user_info WHERE username='${username}'`);
-        //console.log(getUserRow.recordset);
         if (getUserRow.recordset.length === 0) {
             // error code: no user found
             console.log("No user");
         }
         else {
             // retrieve user password
+            var userPassword = await getUserRow.recordset[0].password;
 
             // compare password with enteredPassword
-
-            // if true, authenticate
-
-            // else, error code
+            bcrypt.compare(enteredPassword, userPassword, (err, result) => {
+                if (err) {
+                    console.log("Error comparing passwords:",err)
+                }
+                if (result) {
+                    console.log("password correct");
+                    return true;
+                }
+                else {
+                    console.log("password incorrect");
+                    return false;
+                }
+            });
             console.log("found user");
         }
     }
     catch (err) {
         console.log("Could not connect to database");
     }
+    /**
+     * var poolConnection = await mssql.connect(config).then();
+     */
 }
 
 /**
@@ -85,7 +97,7 @@ export async function getUser(username, enteredPassword) {
 
 
 // Turn into prepared statements
-export async function makeUser(username, password) {
+export async function makeUser(fname, lname, username, password,email) {
     try {
         var poolConnection = await mssql.connect(config);
 
@@ -106,7 +118,8 @@ export async function makeUser(username, password) {
                 }
                 console.log("successfully hashed password");
                 // store in database
-                var create = poolConnection.request().query(`INSERT INTO user_info (username, password) VALUES ('${username}','${hash}')`);
+                var create = poolConnection.request().query(`INSERT INTO user_info 
+                    (username, password, firstName, lastName,email) VALUES ('${username}','${hash}','${fname}','${lname}','${email}')`);
 
             })
         });
@@ -126,8 +139,6 @@ console.log(await getUser("run", "dev"));
 console.log(await getUser("gen5", "bestgen"));*/
 
 console.log("...Starting");
-getUser("Bossam");
-getUser("Stoutland");
 //connectAndQuery();
 
 
