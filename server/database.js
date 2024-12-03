@@ -31,8 +31,8 @@ const config = {
     authentication: {
         type: 'default'
     },
-    user: process.env.AZURE_SQL_USER, 
-    password: process.env.AZURE_SQL_PASSWORD, 
+    user: process.env.AZURE_SQL_USER,
+    password: process.env.AZURE_SQL_PASSWORD,
     options: {
         encrypt: true
     }
@@ -54,33 +54,29 @@ async function connectAndQuery() {
 }
 
 export async function getUser(username, enteredPassword) {
-    var poolConnection = await mssql.connect(config);  
+    var poolConnection = await mssql.connect(config);
     try {
         // check if username in table
         var getUserRow = await poolConnection.request().query(`SELECT * FROM user_info WHERE username='${username}'`);
         if (getUserRow.recordset.length === 0) {
             // error code: no user found
+            console.log(getUserRow.recordset);
             console.log("No user");
         }
         else {
+            console.log("else triggered");
             // retrieve user password
             var userPassword = await getUserRow.recordset[0].password;
 
-            // compare password with enteredPassword
-            bcrypt.compare(enteredPassword, userPassword, (err, result) => {
-                if (err) {
-                    console.log("Error comparing passwords:",err)
-                }
-                if (result) {
-                    console.log("password correct");
-                    return true;
-                }
-                else {
-                    console.log("password incorrect");
-                    return false;
-                }
-            });
+            const res = await bcrypt.compare(enteredPassword, userPassword);
             console.log("found user");
+            if (res) {
+                return getUserRow.recordset[0];
+            }
+            else {
+                return false;
+            }
+            
         }
     }
     catch (err) {
@@ -97,7 +93,7 @@ export async function getUser(username, enteredPassword) {
 
 
 // Turn into prepared statements
-export async function makeUser(fname, lname, username, password,email) {
+export async function makeUser(fname, lname, username, password, email, date) {
     try {
         var poolConnection = await mssql.connect(config);
 
@@ -123,14 +119,34 @@ export async function makeUser(fname, lname, username, password,email) {
 
             })
         });
-        
+
     }
     catch (err) {
         console.log("registration error - could not connect")
     }
 }
 
-export async function authenticateUser(username, password) {
+export async function deleteUser() {
+
+}
+
+export async function updateUser() {
+
+}
+
+export async function createCommittee(cname, cpassword, date, creatorID, chairmanID) {
+
+}
+
+export async function findCommittee(cname) {
+
+}
+
+export async function joinCommittee(cpassword) {
+    
+}
+
+export async function deleteCommittee() {
 
 }
 

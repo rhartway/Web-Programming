@@ -1,0 +1,49 @@
+* {
+    margin: 0;
+    border: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #1a1a21;
+    
+}
+
+.menubar {
+    display: flex;
+    justify-content: center;
+}
+
+#dashboardRedirect {
+    margin-left: 30px;
+    margin-top: 30px;
+    background-color: azure;
+    border-radius: 10px;
+    padding: 0px 15px;
+}
+
+#dashboardRedirect:hover {
+    background-color: rgb(203, 215, 215);
+}   
+
+#userIcons {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    align-self: flex-end;
+    margin-left: auto;
+    margin-right: 30px;
+    margin-top: 30px;
+}
+
+#userIcons > button {
+    width: 100px;
+    height: 50px;
+    border-radius: 10px;
+    background-color: azure;
+}
+
+#userIcons > button:hover {
+    background-color: rgb(203, 215, 215);
+}
+

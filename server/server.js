@@ -6,6 +6,7 @@ import token from 'jsonwebtoken'
 
 
 
+
 const app = express();
 
 app.use(bodyParser.json());
@@ -34,53 +35,94 @@ app.use(cors({origin: "http://127.0.0.1:5500"}));
  */
 app.post("/register", (req, res) => {
     const {fname, lname, username, password,email} = req.body;
-    makeUser(fname,lname,username,password,email);
+    let currentDate = new Date();
+
+    let date = ("0" + currentDate.getDate()).slice(-2);
+
+    // get current month
+    let month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
+
+    // get current year
+    let year = currentDate.getFullYear();
+
+    let fullDate = year + "-" + month + "-" + date;
+
+    makeUser(fname,lname,username,password,email,fullDate);
     res.status(200).send({
         message: "Registration successful",
         redirect: "http://127.0.0.1:5500/client/index.html"
     });
 });
 
-
+// Server should store current user 
+let currentUser;
 
 // User authentication
-app.post("/login", (req, res) => {
+app.post("/login", async (req, res) => {
     const { username, password } = req.body;
+    console.log(username, password);
+    console.log("login api");
+    const result = await getUser(username, password);
+    // const result = getUser(username, password);
 
-    //const result = await getUser(username, password);
-
-    if (!getUser(username, password)) {
+    if (!result) {
         res.status(401).send("User not found or password incorrect");
     }
     else {
+        const userInfo = { // store user data in session storage on client side
+            key: result.userKey,
+            username: result.username,
+            password: result.password,
+            fname: result.firstName,
+            lname: result.lastName,
+            email: result.email
+        }
+
+        currentUser = userInfo;
         // redirect to home page
         res.status(200).send({
-            message: "Successful login",
-            redirect: "http://127.0.0.1:5500/client/index.html"
+            userData: userInfo
         });
     }
     
 
 });
 
-// Update Profile
+ 
+
+// Update user
 app.put("/profile/update", (req, res) => {
 
 });
 
 // Delete user
 
+// Access committee
+app.get("/committee/:name", (req, res) => {
+    const committeeID = req.params.name;
+
+
+});
+
 // Create committee
+app.post("/committee/create", (req, res) => {
+    const {cname, cpassword} = req.body;
+});
+
+// Delete committee
 
 // Join committee
+
+// Update committee
+
+// Get motion
 
 // Create motion
 
 // Delete motion
 
-//
+// 
 
-// Create + Join + Delete Meeting Room
 
 app.listen(port, () => {
     console.log(`App running on port ${port}`);
