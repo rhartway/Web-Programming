@@ -10,11 +10,20 @@
   <body>
     <!-- Main section with committee name and scrolling table for adding users-->
     <div class="create-committee">
-      <form>
+      <form action="http://localhost:8080/committee/create" method="POST">
         <label for="cname">Committee Name:</label>
-        <input type="text" name="cname" id="cname" required />
+        <input type="text" name="cname" id="cname" required><br>
+        <label for="cpassword">Committee Password:</label>
+        <input type="text" name="cpassword" id="cpassword" required>
         <div><span style="text-align: left">Add Users:</span></div>
         <table class="fixed-header">
+          <!--In JS code:
+            Get current user information from web token
+            Get current user id in SQL table
+            Assign current user id as creator + chairman
+            Get friends list from server
+            Create table using friends list (createElement and appendChild)
+            -->
           <thead class="header">
             <tr>
               <th>First Name</th>

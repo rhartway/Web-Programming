@@ -1,29 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <script src="modals.js"></script>
+    <script src="dashboard.js" defer></script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="dashboard.css" />
     <title>Dashboard</title>
   </head>
 
   <body>
-    <div class="menubar">
+    <!--<div class="menubar">
       <a class="active" href="dashboard.html">Home</a>
       <a href="dashboard.html">Meeting Rooms</a>
       <a href="current_motions.html">Current Motions</a>
       <a href="dashboard.html">Past Motions</a>
+    </div>-->
+
+    <header class="menubar">
+      <button class="menuButton" id="button0" data-target="panel0">Profile</button>
+      <button class="menuButton" id="button1" data-target="panel1">Committees</button>
+      <button class="menuButton" id="button2" data-target="panel2">Inbox</button>
+      <button class="menuButton" id="button3" data-target="panel3">Friends</button>
+    </header>
+
+    <div class="contentPanel" id="panel0">
+      <p>First name: N/A</p>
+      <p>Last name: N/A</p>
+      <p>Email: N/A</p>
     </div>
 
-    <div class="content">
-      <button class="dash-buttons" onclick="openModal('modalNewCommittee')">
-        New Committee
-      </button>
-      <button class="dash-buttons" onclick="openModal('modalJoinCommittee')">
-        Join Committee
-      </button>
+    <div class="contentPanel" id="panel1">
+      <div id="committeeButtons">
+        <button class="dash-buttons" onclick="openModal('modalNewCommittee')">
+          New Committee
+        </button>
+        <button class="dash-buttons" onclick="openModal('modalJoinCommittee')">
+          Join Committee
+        </button>
+      </div>
     </div>
+
+    <div class="contentPanel" id="panel2">
+      Inbox:
+    </div>
+
+    <div class="contentPanel" id="panel3">
+      Friends List:
+    </div>
+
+
 
     <div id="modalNewCommittee" class="modal">
       <div class="modal-content">

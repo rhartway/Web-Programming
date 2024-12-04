@@ -1,3 +1,52 @@
+document.addEventListener("DOMContentLoaded", () => {
+    const user = JSON.parse(sessionStorage.getItem("userInfo"));
+
+    if (user) {
+        // populate profile
+
+        // populate committees
+
+        // populate inbox
+
+        // populate friends
+    }
+    else {
+
+    }
+});
+
+for (let i = 1; i < 4; i++) {
+    document.getElementById(`panel${i}`).style.display = "none";
+}
+
+const menuButtons = document.querySelectorAll(".menuButton");
+
+for (let i = 0; i < menuButtons.length; i++) {
+    menuButtons[i].addEventListener("click", function() {
+
+        //hide all divs
+        document.querySelectorAll(".contentPanel").forEach((element) => {
+            element.style.display = "none";
+        });
+
+        // find div with id that matches data-target, show that div
+        document.getElementById(`${this.dataset.target}`).style.display = "block";
+    });
+}
+
+
+
+// update profile
+
+
+// join committee
+
+
+// 
+
+
+
+
 function openModal(modalId) {
     document.getElementById(modalId).style.display = 'block';
 }

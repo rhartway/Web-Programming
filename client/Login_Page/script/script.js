@@ -48,40 +48,72 @@ if (window.location.pathname.includes("index.html")) {
     const loginButton = document.querySelector("#login_btn");
     if (loginButton) {
         loginButton.addEventListener('click', async (event) => {
-            alert("Login button has been clicked");
-            // console.log(presetPassword);
-            // event.preventDefault();
-            // const enteredUsername = document.querySelector("#username").value;
-            // const enteredPassword = document.querySelector("#password").value;
-            const response = await fetch(`${server}/login`, {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                username: `${document.getElementById("username").value}`,
-                password: `${document.getElementById("password").value}`
-            });
-        
+            const response = await fetch(`${server}/login`, { 
+            method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: document.getElementById("username").value,
+                        password: document.getElementById("password").value
+                    })
+                });
+            // alert(document.getElementById("username").value);
+            console.log(response.ok);
             if (response.ok) {
                 // redirect to home page with user info
-                
+                console.log("Login successful");
+                const currentUser = await response.json();
+                console.log(JSON.stringify(currentUser));
+                sessionStorage.setItem("userInfo", JSON.stringify(currentUser));
+
+                window.location.replace("http://127.0.0.1:5500/client/index.html");
+
             }
-            else {
+
+             else {
                 var errorCode = document.createElement("p");
                 errorCode.textContent = "The user is not found or the password is incorrect. Please try again.";
                 errorCode.style.color = "red";
 
                 document.getElementById("loginForm").appendChild(errorCode);
-            }
-            
+          }
 
-            // if (checkUsers(filePath, enteredUsername, enteredPassword)) {
-            //     alert("Accepted");
-            // } else {
-            //     alert("Invalid username or password");
-            // }
         });
     }
+    //         // console.log(presetPassword);
+    //         // event.preventDefault();
+    //         // const enteredUsername = document.querySelector("#username").value;
+    //         // const enteredPassword = document.querySelector("#password").value;
+    //         /*const response = await fetch(`${server}/login`, {
+    //             method: "POST",
+    //             headers: {
+    //                 'Content-Type': 'application/json'
+    //             },
+    //             username: `${document.getElementById("username").value}`,
+    //             password: `${document.getElementById("password").value}`
+    //         });
+        
+    //         if (response.ok) {
+    //             // redirect to home page with user info
+
+    //         }
+    //         else {
+    //             var errorCode = document.createElement("p");
+    //             errorCode.textContent = "The user is not found or the password is incorrect. Please try again.";
+    //             errorCode.style.color = "red";
+
+    //             document.getElementById("loginForm").appendChild(errorCode);
+    //         }*/
+            
+
+    //         // if (checkUsers(filePath, enteredUsername, enteredPassword)) {
+    //         //     alert("Accepted");
+    //         // } else {
+    //         //     alert("Invalid username or password");
+    //         // }
+    //     });
+    // }
 
 
 
