@@ -1,3 +1,7 @@
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
 import express from 'express'
 import cors from 'cors'
 import { getUser, makeUser } from './database.js';
@@ -18,7 +22,8 @@ import {
 
 
 
-
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 
@@ -62,13 +67,12 @@ io.on("connection", (socket) => {
 });
 
 // Serve static files from the client directory
-app.use(express.static('client'));
+app.use(express.static(path.join(__dirname, 'client')));
 
-// Serve the homepage
-app.get('/', function (req, res) {
-    res.render('index', {});
-  });
-  
+// THIS IS WHERE YOU GO @ LOCALHOST:8080
+app.get('/', (req, res) => {
+    //res.sendFile(path.join(__dirname, "../client/committee_related/committee_template.html"));
+});
 
 
 /**

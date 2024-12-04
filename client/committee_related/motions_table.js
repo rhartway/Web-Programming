@@ -1,5 +1,6 @@
 const motionsTable = document.getElementById('motionsTable');
 const tableBody = document.getElementById('tableBody');
+const server = "http://localhost:8080/";
 
 //<Motion
 //Description
@@ -7,11 +8,16 @@ const tableBody = document.getElementById('tableBody');
 //Date
 
 //update this to grab from database instead later
+let motions
+
 async function fetchMotions() {
   try {
-      const response = await fetch('/api/motions');
+      const response = await fetch(`${server}api/motions`);
       const motions = await response.json();
-      loadMotionsTable(motions);
+      console.log(motions);
+
+
+      await loadMotionsTable(motions);
   } catch (err) {
       console.error('Error fetching motions:', err);
       const motions = [
@@ -28,8 +34,9 @@ async function fetchMotions() {
 
 
 
-function loadMotionsTable(motions) {
+async function loadMotionsTable(motions) {
   //hi
+  console.log("hi");
   motions.forEach( item => {
     let row = tableBody.insertRow();
     row.id = item.motionKey; //set motionID as identifier
@@ -38,7 +45,8 @@ function loadMotionsTable(motions) {
     let motion = row.insertCell(0);
       //populate cell with motion name and link to motion
     let motionLink = document.createElement('a');
-    motionLink.setAttribute("href", `/chatroom/${item.motionKey}`); // Link to chatroom
+    //motionLink.setAttribute("href", `/chatroom/${item.motionKey}`); // Link to chatroom
+    motionLink.setAttribute("href", `/chatroom`); // Link to chatroom
 
     let linkText = document.createTextNode(item.title);
     motionLink.appendChild(linkText);
@@ -64,106 +72,117 @@ function loadMotionsTable(motions) {
 
 
 
+
+
+fetchMotions();
+
+
 $(document).ready(function() {
-  function cbDropdown(column) {
-    return $('<ul>', {
-      'class': 'cb-dropdown'
-    }).appendTo($('<div>', {
-      'class': 'cb-dropdown-wrap'
-    }).appendTo(column));
-
-  }
-
-  $('#motionsTable').DataTable({
-    bAutoWidth: false, 
-    aoColumns : [
-      { sWidth: '25%' }, //org
-      { sWidth: '25%' }, //filename
-      { sWidth: '25%' }, //year
-      { sWidth: '25%' }, //edition
-    ],
-    responsive: true,
-    columnDefs: [
-      {
-        targets: 0,
-        render: function (data, type, row) {
-          if (type === 'filter') {
-            if ( data.includes( 'href' ) ) {
-              return $(data).text();
-            }
-            return data;
-          }
-          return data;
-        }
+    setTimeout(function() {
+      function cbDropdown(column) {
+        return $('<ul>', {
+          'class': 'cb-dropdown'
+        }).appendTo($('<div>', {
+          'class': 'cb-dropdown-wrap'
+        }).appendTo(column));
+    
       }
-    ],
-    initComplete: function() {
-      this.api()
-      .columns()
-      .every(function(index) 
-      {
-
-                var column = this;
-                var ddmenu = cbDropdown($(column.header()))
-                  .on('change', ':checkbox', function() {
-                    var active;
-                    var vals = $(':checked', ddmenu).map(function(index, element) {
-                      active = true;
-                      return $.fn.dataTable.util.escapeRegex($(element).val());
-                    }).toArray().join('|');
-        
-                    column
-                      .search(vals.length > 0 ? '^(' + vals + ')$' : '', true, false)
-                      .draw();
-        
-                    // Highlight the current item if selected.
-                    if (this.checked) {
-                      $(this).closest('li').addClass('active');
-                    } else {
-                      $(this).closest('li').removeClass('active');
-                    }
-        
-                    // Highlight the current filter if selected.
-                    var active2 = ddmenu.parent().is('.active');
-                    if (active && !active2) {
-                      ddmenu.parent().addClass('active');
-                    } else if (!active && active2) {
-                      ddmenu.parent().removeClass('active');
-                    }
-                  });
-        
-                //. Keep track of the select options to not duplicate
-                var selectOptions = [];
-                column.data().unique().sort().each(function(d, j) {
-                  
-                  // Use jQuery to get the text if the cell is a link
-                  if ( d.includes( 'href' ) ) {
-                    d = $(d).text();
-                  }
-                  
-                  if ( ! selectOptions.includes( d ) ) {
-                    
-                    selectOptions.push( d );
-                    
-                    var // wrapped
-                    $label = $('<label>'),
-                        $text = $('<span>', {
-                          text: d
-                        }),
-                        $cb = $('<input>', {
-                          type: 'checkbox',
-                          value: d
-                        });
-        
-                    $text.appendTo($label);
-                    $cb.appendTo($label);
-        
-                    ddmenu.append($('<li>').append($label));
-                  }
-                });
-       
+    
+      $('#motionsTable').DataTable({
+        bAutoWidth: false, 
+        aoColumns : [
+          { sWidth: '25%' }, //org
+          { sWidth: '25%' }, //filename
+          { sWidth: '25%' }, //year
+          { sWidth: '25%' }, //edition
+        ],
+        responsive: true,
+        columnDefs: [
+          {
+            targets: 0,
+            render: function (data, type, row) {
+              if (type === 'filter') {
+                if ( data.includes( 'href' ) ) {
+                  return $(data).text();
+                }
+                return data;
+              }
+              return data;
+            }
+          }
+        ],
+        initComplete: function() {
+          this.api()
+          .columns()
+          .every(function(index) 
+          {
+            if (index == 2) //menu for creator bc others don't really make sense
+            {
+                    var column = this;
+                    var ddmenu = cbDropdown($(column.header()))
+                      .on('change', ':checkbox', function() {
+                        var active;
+                        var vals = $(':checked', ddmenu).map(function(index, element) {
+                          active = true;
+                          return $.fn.dataTable.util.escapeRegex($(element).val());
+                        }).toArray().join('|');
+            
+                        column
+                          .search(vals.length > 0 ? '^(' + vals + ')$' : '', true, false)
+                          .draw();
+            
+                        // Highlight the current item if selected.
+                        if (this.checked) {
+                          $(this).closest('li').addClass('active');
+                        } else {
+                          $(this).closest('li').removeClass('active');
+                        }
+            
+                        // Highlight the current filter if selected.
+                        var active2 = ddmenu.parent().is('.active');
+                        if (active && !active2) {
+                          ddmenu.parent().addClass('active');
+                        } else if (!active && active2) {
+                          ddmenu.parent().removeClass('active');
+                        }
+                      
+                      });
+              
+                    //. Keep track of the select options to not duplicate
+                    var selectOptions = [];
+                    column.data().unique().sort().each(function(d, j) {
+                      
+                      // Use jQuery to get the text if the cell is a link
+                      if ( d.includes( 'href' ) ) {
+                        d = $(d).text();
+                      }
+                      
+                      if ( ! selectOptions.includes( d ) ) {
+                        
+                        selectOptions.push( d );
+                        
+                        var // wrapped
+                        $label = $('<label>'),
+                            $text = $('<span>', {
+                              text: d
+                            }),
+                            $cb = $('<input>', {
+                              type: 'checkbox',
+                              value: d
+                            });
+            
+                        $text.appendTo($label);
+                        $cb.appendTo($label);
+            
+                        ddmenu.append($('<li>').append($label));
+                      }
+                    });
+          }
+           
+          });
+        }
       });
-    }
-  });
+  }, 250); //small delay because this loads faster than data
+
+  
 });
-loadMotionsTable(motions);
