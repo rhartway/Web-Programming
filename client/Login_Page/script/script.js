@@ -48,6 +48,7 @@ if (window.location.pathname.includes("index.html")) {
     const loginButton = document.querySelector("#login_btn");
     if (loginButton) {
         loginButton.addEventListener('click', async (event) => {
+            event.preventDefault();
             const response = await fetch(`${server}/login`, { 
             method: "POST",
                     headers: {

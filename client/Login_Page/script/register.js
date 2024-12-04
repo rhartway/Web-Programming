@@ -19,12 +19,12 @@ registerButton.addEventListener("click", async (event) => {
     });
     
     if (response.ok) {
-        console.log("Registration");
+        /*console.log("Registration");
         const currentUser = await response.json();
         console.log(JSON.stringify(currentUser));
-        sessionStorage.setItem("userInfo", JSON.stringify(currentUser));
+        sessionStorage.setItem("userInfo", JSON.stringify(currentUser));*/
 
-        window.location.replace("http://127.0.0.1:5500/client/index.html");   
+        window.location.replace("http://127.0.0.1:5500/client/Login_Page/src/index.html");   
     }
     else {
         var errorCode = document.createElement("p");

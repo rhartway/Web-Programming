@@ -96,17 +96,16 @@ app.post("/register", async (req, res) => {
 
     makeUser(username,password,fname,lname,email,fullDate);
 
-    const userInfo = {
+    // add userkey here
+    /*const userInfo = {
         username: username,
         password: password,
         firstName: fname,
         lastName: lname,
         email: email
-    }
+    }*/
 
-    res.status(200).send({
-        userData: userInfo
-    });
+    res.status(200).send("Registration Success");
 
 });
 
