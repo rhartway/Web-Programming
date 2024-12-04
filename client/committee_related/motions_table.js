@@ -6,10 +6,12 @@ const tableBody = document.getElementById('tableBody');
 //Creator
 //Date
 
+
+
 //update this to grab from database instead later
 async function fetchMotions() {
   try {
-      const response = await fetch('/api/motions');
+      const response = await fetch(`${server}/api/motions`);
       const motions = await response.json();
       loadMotionsTable(motions);
   } catch (err) {

@@ -30,6 +30,7 @@
     </div>
 
     <div class="contentPanel" id="panel1">
+      <p id="warning"></p>
       <div id="committeeButtons">
         <button class="dash-buttons" onclick="openModal('modalNewCommittee')">
           New Committee
@@ -65,22 +66,25 @@
             id="committeeName"
             name="committeeName"
             placeholder="Enter Commitee Name"
+            required
           />
+          <label for="committeePassword">Committee Code:</label>
+          <input type="text" id="committeePassword" name="committeePassword" placeholder="Enter a join code for the committee" required>
 
           <!-- Input for inviting users -->
-          <label for="inviteUser">Invite User:</label>
+          <!--<label for="inviteUser">Invite User:</label>
           <input
             type="text"
             id="inviteUser"
             placeholder="Enter username"
             required
           />
-          <button type="button" id="addUserButton">Add User</button>
+          <button type="button" id="addUserButton">Add User</button>-->
 
           <!-- List to display invited users -->
-          <ul id="userList"></ul>
+          <!--<ul id="userList"></ul>-->
 
-          <button type="submit">Create Committee</button>
+          <button type="submit" id="submitCommittee">Create Committee</button>
         </form>
       </div>
     </div>

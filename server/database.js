@@ -97,6 +97,8 @@ export async function makeUser(username, password, fname, lname, email, date) {
     try {
         var poolConnection = await mssql.connect(config);
 
+        // check if username exists
+
         // generate bcrypt salts
         const saltNum = 10;
 
@@ -135,11 +137,47 @@ export async function updateUser() {
 }
 
 export async function createCommittee(cname, cpassword, date, creatorID, chairmanID) {
+    try {
+        var poolConnection = await mssql.connect(config);
 
+        // add committee 
+        var addCommittee = await poolConnection.request().query(`INSERT INTO committee_info (committeeName, committeePassword,chairmanID, creatorID, date_created) OUTPUT inserted.committeeID VALUES ('${cname}', '${cpassword}', '${chairmanID}', '${creatorID}', '${date})`);
+
+        // get committee id
+        const committeeID = addCommittee.recordset[0].committeeID;
+
+        // add creatorID and committeeID to junction table
+        var addJunction = await poolConnection.request().query(`INSERT INTO user_committee_junction (userID, committeeID) VALUES ('${creatorID}','${committeeID}')`)
+
+        return true;
+    }
+    catch (err) {
+        console.log("Could not create committee")
+
+        return false;
+    }
+}
+
+export async function getCommittees(currentUserKey) {
+    try {
+        var poolConnection = await mssql.connect(config);
+
+        var resultSet = await poolConnection.request().query(`SELECT * FROM user_committee_junction WHERE userID='${currentUserKey}'`);
+
+        if (resultSet.recordset.length === 0) {
+            return false;
+        }
+        else {
+            return resultSet.recordset[0];
+        }
+    }
+    catch (err) {
+        console.log("Could not connect to database", err)
+    }
 }
 
 export async function findCommittee(cname) {
-
+    
 }
 
 export async function joinCommittee(cpassword) {

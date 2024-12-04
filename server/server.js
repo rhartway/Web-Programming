@@ -1,6 +1,6 @@
 import express from 'express'
 import cors from 'cors'
-import { getUser, makeUser } from './database.js';
+import { getUser, makeUser, getCommittees, createCommittee } from './database.js';
 import { saveChatMessage, getChatMessages } from './database.js';
 import { getMotion, getMotions, makeMotion } from './database.js';
 
@@ -11,10 +11,10 @@ import { Server } from "socket.io";
 import { createServer } from "node:http";
 
   
-import {
-    handleChatConnection,
-    setIoInstance,
-} from "../controllers/chatController.js"; 
+import {handleChatConnection} from "./chatController.js"; 
+import {setIoInstance} from './chatController.js';
+
+
 
 
 
@@ -143,25 +143,56 @@ app.post("/login", async (req, res) => {
 
 });
 
- 
 
 // Update user
-app.put("/profile/update", (req, res) => {
+app.put("/dashboard/profile/update", (req, res) => {
 
 });
 
 // Delete user
 
-// Access committee
-app.get("/committee/:name", (req, res) => {
-    const committeeID = req.params.name;
+// Get committees associated with user
+app.post("/dashboard/committee", async (req, res) => {
+    const { currentKey } = req.body;
+    const committeesResponse = await getCommittees(currentKey);
 
-
+    if (!committeesResponse) {
+        res.status(404).send("You are not in any committees");
+    }
+    else {
+        console.log(committeesResponse);
+        res.status(200).send({
+            userCommittees: committeesResponse
+        });
+    }
 });
 
 // Create committee
-app.post("/committee/create", (req, res) => {
-    const {cname, cpassword} = req.body;
+app.post("/committee/create", async (req, res) => {
+    const {cname, cpassword,currentUserKey} = req.body;
+
+    let currentDate = new Date();
+
+    let date = ("0" + currentDate.getDate()).slice(-2);
+
+    // get current month
+    let month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
+
+    // get current year
+    let year = currentDate.getFullYear();
+
+    let fullDate = year + "-" + month + "-" + date;
+
+    const committeeMade = await createCommittee(cname, cpassword, fullDate, currentUserKey, currentUserKey);
+
+    if (!committeeMade) {
+
+    }
+    else {
+        
+    }
+
+
 });
 
 // Delete committee

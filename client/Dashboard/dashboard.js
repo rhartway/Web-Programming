@@ -1,12 +1,16 @@
-const user_key = 0;
+const server = "http://localhost:8080";
 
-document.addEventListener("DOMContentLoaded", () => {
+let user_key = 0;
+
+document.addEventListener("DOMContentLoaded", async () => {
     const user = JSON.parse(sessionStorage.getItem("userInfo"));
 
     if (user) {
 
         // populate userKey
-        user_key = user.userData.userKey;
+        user_key = user.userData.key;
+
+        console.log(user_key);
         // populate profile
         console.log(user.userData);
 
@@ -18,7 +22,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // populate committees
 
-        // request server
+        // request server for ids
+        const IDresponse = await fetch(`${server}/dashboard/committee`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({currentKey: user_key})
+        });
+
+        if (IDresponse.ok) {
+            console.log("committee ids successfully fetched");
+            // parse and isolate committee ids
+
+            // search committees table for committees
+        }
+        else {
+            document.getElementById("warning").textContent = "You are not in any committees";
+        }
 
         // populate inbox
 
@@ -26,6 +47,27 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     else {
 
+    }
+});
+
+document.getElementById("submitCommittee").addEventListener("click", async (event) => {
+    const response = await fetch(`${server}/committee/create`, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            cname: document.getElementById("committeeName").value,
+            cpassword: document.getElementById("committeePassword").value,
+            currentUserKey: user_key
+        })
+    });
+    if (response.ok) {
+        console.log("Successfully created committee");
+        closeModal('modalNewCommittee');
+    }
+    else {
+        console.log("Failed to create committee");
     }
 });
 
