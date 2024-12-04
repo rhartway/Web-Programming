@@ -17,6 +17,9 @@ import {
 } from "../controllers/chatController.js"; 
 
 
+
+
+
 const app = express();
 
 app.use(bodyParser.json());
@@ -41,6 +44,7 @@ app.use(cors({origin: "http://127.0.0.1:5500"}));
 
 //set io instance
 setIoInstance(io);
+
 // Chat connection handling
 io.on("connection", (socket) => {
     socket.on('joinRoom', async (motionID) => {
@@ -57,7 +61,14 @@ io.on("connection", (socket) => {
     handleChatConnection(socket);
 });
 
+// Serve static files from the client directory
+app.use(express.static('client'));
 
+// Serve the homepage
+app.get('/', function (req, res) {
+    res.render('index', {});
+  });
+  
 
 
 /**
@@ -191,13 +202,17 @@ app.get('/chatroom/:motionID', (req, res) => {
 });
 
 io.on("connection", (socket) => {
-    socket.on('joinRoom', (motionID) => {
+    socket.on('joinRoom', async (motionID) => {
       socket.join(motionID);
+      const messages = await getChatMessages(motionID);
+      socket.emit('messageHistory', messages);
     });
   
-    socket.on('chatMessage', ({ motionID, message }) => {
-      io.to(motionID).emit('message', message);
+    socket.on('chatMessage', async ({ motionID, sender, message }) => {
+        await saveChatMessage(motionID, sender, message);
+        io.to(motionID).emit('message', { sender, message });
     });
+
   
     handleChatConnection(socket);
   });
