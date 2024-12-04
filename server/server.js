@@ -47,15 +47,15 @@ setIoInstance(io);
 
 // Chat connection handling
 io.on("connection", (socket) => {
-    socket.on('joinRoom', async (motionID) => {
-        socket.join(motionID);
-        const messages = await getChatMessages(motionID);
+    socket.on('joinRoom', async (motionKey) => {
+        socket.join(motionKey);
+        const messages = await getChatMessages(motionKey);
         socket.emit('messageHistory', messages);
     });
 
-    socket.on('chatMessage', async ({ motionID, sender, message }) => {
-        await saveChatMessage(motionID, sender, message);
-        io.to(motionID).emit('message', { sender, message });
+    socket.on('chatMessage', async ({ motionKey, sender, message }) => {
+        await saveChatMessage(motionKey, sender, message);
+        io.to(motionKey).emit('message', { sender, message });
     });
 
     handleChatConnection(socket);
@@ -195,21 +195,21 @@ app.get('/api/motions', async (req, res) => {
 
 // Create + Join + Delete Meeting/Chat Room
 //route to chatroom
-app.get('/chatroom/:motionID', (req, res) => {
-  const motionID = req.params.motionID;
+app.get('/chatroom/:motionKey', (req, res) => {
+  const motionKey = req.params.motionKey;
   res.sendFile(__dirname + '/client/chatroom.html');
 });
 
 io.on("connection", (socket) => {
-    socket.on('joinRoom', async (motionID) => {
-      socket.join(motionID);
-      const messages = await getChatMessages(motionID);
+    socket.on('joinRoom', async (motionKey) => {
+      socket.join(motionKey);
+      const messages = await getChatMessages(motionKey);
       socket.emit('messageHistory', messages);
     });
   
-    socket.on('chatMessage', async ({ motionID, sender, message }) => {
-        await saveChatMessage(motionID, sender, message);
-        io.to(motionID).emit('message', { sender, message });
+    socket.on('chatMessage', async ({ motionKey, sender, message }) => {
+        await saveChatMessage(motionKey, sender, message);
+        io.to(motionKey).emit('message', { sender, message });
     });
 
   
