@@ -225,13 +225,13 @@ export async function getMotions() {
 
 
 // retrive a specific motion (idk when id use this but whatevr)
-export async function getMotion(motionID) {
+export async function getMotion(motionKey) {
     try {
         var poolConnection = await mssql.connect(config);
         const result = await poolConnection.request().query(`
             SELECT title, description, creator, date
             FROM motions
-            WHERE motionID = '${motionID}'
+            WHERE motionKey = '${motionKey}'
         `);
         return result.recordset;
     } catch (err) {
@@ -242,25 +242,25 @@ export async function getMotion(motionID) {
 
 
 // User + Message Stuff
-export async function saveChatMessage(motionID, sender, message) {
+export async function saveChatMessage(motionKey, sender, message) {
     try {
         var poolConnection = await mssql.connect(config);
         await poolConnection.request().query(`
-            INSERT INTO motion_messages (motionID, sender, message)
-            VALUES ('${motionID}', '${sender}', '${message}')
+            INSERT INTO motion_messages (motionKey, sender, message)
+            VALUES ('${motionKey}', '${sender}', '${message}')
         `);
     } catch (err) {
         console.log("Error saving chat message:", err);
     }
 }
 
-export async function getChatMessages(motionID) {
+export async function getChatMessages(motionKey) {
     try {
         var poolConnection = await mssql.connect(config);
         const result = await poolConnection.request().query(`
             SELECT sender, message, timestamp
             FROM motion_messages
-            WHERE motionID = '${motionID}'
+            WHERE motionID = '${motionKey}'
             ORDER BY timestamp ASC
         `);
         return result.recordset;

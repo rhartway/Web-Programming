@@ -1,3 +1,7 @@
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
 import express from 'express'
 import cors from 'cors'
 import { getUser, makeUser, getCommittees, createCommittee } from './database.js';
@@ -18,7 +22,8 @@ import {setIoInstance} from './chatController.js';
 
 
 
-
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 
@@ -47,28 +52,27 @@ setIoInstance(io);
 
 // Chat connection handling
 io.on("connection", (socket) => {
-    socket.on('joinRoom', async (motionID) => {
-        socket.join(motionID);
-        const messages = await getChatMessages(motionID);
+    socket.on('joinRoom', async (motionKey) => {
+        socket.join(motionKey);
+        const messages = await getChatMessages(motionKey);
         socket.emit('messageHistory', messages);
     });
 
-    socket.on('chatMessage', async ({ motionID, sender, message }) => {
-        await saveChatMessage(motionID, sender, message);
-        io.to(motionID).emit('message', { sender, message });
+    socket.on('chatMessage', async ({ motionKey, sender, message }) => {
+        await saveChatMessage(motionKey, sender, message);
+        io.to(motionKey).emit('message', { sender, message });
     });
 
     handleChatConnection(socket);
 });
 
 // Serve static files from the client directory
-app.use(express.static('client'));
+app.use(express.static(path.join(__dirname, 'client')));
 
-// Serve the homepage
-app.get('/', function (req, res) {
-    res.render('index', {});
-  });
-  
+// THIS IS WHERE YOU GO @ LOCALHOST:8080
+app.get('/', (req, res) => {
+    //res.sendFile(path.join(__dirname, "../client/committee_related/committee_template.html"));
+});
 
 
 /**
@@ -226,21 +230,21 @@ app.get('/api/motions', async (req, res) => {
 
 // Create + Join + Delete Meeting/Chat Room
 //route to chatroom
-app.get('/chatroom/:motionID', (req, res) => {
-  const motionID = req.params.motionID;
+app.get('/chatroom/:motionKey', (req, res) => {
+  const motionKey = req.params.motionKey;
   res.sendFile(__dirname + '/client/chatroom.html');
 });
 
 io.on("connection", (socket) => {
-    socket.on('joinRoom', async (motionID) => {
-      socket.join(motionID);
-      const messages = await getChatMessages(motionID);
+    socket.on('joinRoom', async (motionKey) => {
+      socket.join(motionKey);
+      const messages = await getChatMessages(motionKey);
       socket.emit('messageHistory', messages);
     });
   
-    socket.on('chatMessage', async ({ motionID, sender, message }) => {
-        await saveChatMessage(motionID, sender, message);
-        io.to(motionID).emit('message', { sender, message });
+    socket.on('chatMessage', async ({ motionKey, sender, message }) => {
+        await saveChatMessage(motionKey, sender, message);
+        io.to(motionKey).emit('message', { sender, message });
     });
 
   
