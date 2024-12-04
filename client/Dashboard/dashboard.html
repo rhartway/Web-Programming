@@ -31,13 +31,19 @@
 
     <div class="contentPanel" id="panel1">
       <p id="warning"></p>
-      <div id="committeeButtons">
-        <button class="dash-buttons" onclick="openModal('modalNewCommittee')">
-          New Committee
-        </button>
-        <button class="dash-buttons" onclick="openModal('modalJoinCommittee')">
-          Join Committee
-        </button>
+      <div id="committeeContainer">
+        <div id="committeeButtons">
+          <button class="dash-buttons" onclick="openModal('modalNewCommittee')">
+            New Committee
+          </button>
+          <button class="dash-buttons" onclick="openModal('modalJoinCommittee')">
+            Join Committee
+          </button>
+        </div>
+
+        <div id="committeeEntries">
+
+        </div>
       </div>
     </div>
 
@@ -102,10 +108,10 @@
             type="text"
             id="committeeId"
             name="committeeId"
-            placeholder="Enter Commitee ID"
+            placeholder="Enter Committee ID"
             required
           />
-          <button type="submit">Submit</button>
+          <button type="submit" id="joinCommitteeButton">Submit</button>
         </form>
       </div>
     </div>

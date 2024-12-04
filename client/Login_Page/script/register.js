@@ -4,7 +4,7 @@ const registerButton = document.getElementById("sign_up_btn");
 
 registerButton.addEventListener("click", async (event) => {
     event.preventDefault();
-    const response = await fetch(`${server}/register`, { 
+    const response = await fetch(`${server}/api/register`, { 
         method: "POST",
         headers: {
             'Content-Type': 'application/json'

@@ -49,7 +49,7 @@ if (window.location.pathname.includes("index.html")) {
     if (loginButton) {
         loginButton.addEventListener('click', async (event) => {
             event.preventDefault();
-            const response = await fetch(`${server}/login`, { 
+            const response = await fetch(`${server}/api/login`, { 
             method: "POST",
                     headers: {
                         'Content-Type': 'application/json'

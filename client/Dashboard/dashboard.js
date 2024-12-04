@@ -1,3 +1,5 @@
+const committeeArray = []
+
 const server = "http://localhost:8080";
 
 let user_key = 0;
@@ -22,8 +24,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         // populate committees
 
-        // request server for ids
-        const IDresponse = await fetch(`${server}/dashboard/committee`, {
+        // request server for committees
+        const IDresponse = await fetch(`${server}/api/dashboard/committee`, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
@@ -33,9 +35,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (IDresponse.ok) {
             console.log("committee ids successfully fetched");
+            //console.log(parsedIDs.userCommittees);
             // parse and isolate committee ids
+            //console.log(parsedIDs.userCommittees[0]);
+            const parseResponse = await IDresponse.json();
+            console.log(parseResponse.userCommittees);
 
-            // search committees table for committees
+            parseResponse.userCommittees.forEach((obj) => {
+                renderCommittees(obj.committeeKey,obj.committeeName);
+            });
+            
         }
         else {
             document.getElementById("warning").textContent = "You are not in any committees";
@@ -51,7 +60,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 document.getElementById("submitCommittee").addEventListener("click", async (event) => {
-    const response = await fetch(`${server}/committee/create`, {
+    const response = await fetch(`${server}/api/committee/create`, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
@@ -65,11 +74,34 @@ document.getElementById("submitCommittee").addEventListener("click", async (even
     if (response.ok) {
         console.log("Successfully created committee");
         closeModal('modalNewCommittee');
+        window.location.reload();
     }
     else {
         console.log("Failed to create committee");
     }
 });
+
+document.getElementById("joinCommitteeButton").addEventListener("click", async (event) => {
+    const joinResponse = await fetch(`${server}/api/committee/join`, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            userCurrent: user_key,
+            committeeCode: document.getElementById("committeeId").value
+        })
+    });
+
+    if (joinResponse.ok) {
+        console.log("successfully joined room");
+        closeModal('modalJoinCommittee');
+        window.location.reload();
+    }
+    else {
+        console.log("failed to join committee");
+    }
+})
 
 for (let i = 1; i < 4; i++) {
     document.getElementById(`panel${i}`).style.display = "none";
@@ -88,6 +120,24 @@ for (let i = 0; i < menuButtons.length; i++) {
         // find div with id that matches data-target, show that div
         document.getElementById(`${this.dataset.target}`).style.display = "block";
     });
+}
+
+async function renderCommittees(committeeKey, committeeName) {
+    console.log(committeeKey, committeeName);
+
+    // build html element
+    const committeeLi = document.createElement("li");
+
+    const committeeA = document.createElement("a");
+    committeeA.textContent = `${committeeName}`;
+
+    // send committeeKey to server
+    committeeA.setAttribute('href',`../committee_related/committee_template.html?committeeKey=${committeeKey}`);
+
+    committeeLi.appendChild(committeeA);
+
+    // add to committee container
+    document.getElementById("committeeEntries").appendChild(committeeLi);
 }
 
 

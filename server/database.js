@@ -44,10 +44,10 @@ async function connectAndQuery() {
 
         console.log("Reading rows from the Table...");
         var resultSet = await poolConnection.request().query(`SELECT * from user_info`);
-
+        //console.log(resultSet.recordset);
 
         // close connection only when we're certain application is finished
-        poolConnection.close();
+        //poolConnection.close();
     } catch (err) {
         console.error(err.message);
     }
@@ -124,7 +124,7 @@ export async function makeUser(username, password, fname, lname, email, date) {
 
     }
     catch (err) {
-        console.log("registration error - could not connect")
+        console.log("registration error - could not connect", err)
     }
 }
 
@@ -141,18 +141,18 @@ export async function createCommittee(cname, cpassword, date, creatorID, chairma
         var poolConnection = await mssql.connect(config);
 
         // add committee 
-        var addCommittee = await poolConnection.request().query(`INSERT INTO committee_info (committeeName, committeePassword,chairmanID, creatorID, date_created) OUTPUT inserted.committeeID VALUES ('${cname}', '${cpassword}', '${chairmanID}', '${creatorID}', '${date})`);
+        var addCommittee = await poolConnection.request().query(`INSERT INTO committee_info (committeeName, committeePassword,chairmanID, creatorID, date_created) OUTPUT inserted.committeeKey VALUES ('${cname}', '${cpassword}', '${chairmanID}', '${creatorID}', '${date}')`);
 
         // get committee id
-        const committeeID = addCommittee.recordset[0].committeeID;
+        const committeeID = addCommittee.recordset[0].committeeKey;
 
         // add creatorID and committeeID to junction table
-        var addJunction = await poolConnection.request().query(`INSERT INTO user_committee_junction (userID, committeeID) VALUES ('${creatorID}','${committeeID}')`)
+        var addJunction = await poolConnection.request().query(`INSERT INTO user_committee_junction (userKey, committeeKey) VALUES ('${creatorID}','${committeeID}')`)
 
         return true;
     }
     catch (err) {
-        console.log("Could not create committee")
+        console.log("Could not create committee", err)
 
         return false;
     }
@@ -162,13 +162,17 @@ export async function getCommittees(currentUserKey) {
     try {
         var poolConnection = await mssql.connect(config);
 
-        var resultSet = await poolConnection.request().query(`SELECT * FROM user_committee_junction WHERE userID='${currentUserKey}'`);
+        var resultSet = await poolConnection.request().query(`SELECT c.committeeKey, c.committeeName
+                FROM committee_info c
+                JOIN user_committee_junction uc ON c.committeeKey = uc.committeeKey
+                JOIN user_info u ON uc.userKey = u.userKey
+                WHERE u.userKey = '${currentUserKey}'`);
 
         if (resultSet.recordset.length === 0) {
             return false;
         }
         else {
-            return resultSet.recordset[0];
+            return resultSet.recordset;
         }
     }
     catch (err) {
@@ -176,15 +180,81 @@ export async function getCommittees(currentUserKey) {
     }
 }
 
-export async function findCommittee(cname) {
-    
+
+export async function getCommitteeByKey(ckey) {
+    try {
+        var poolConnection = await mssql.connect(config);
+
+        var foundCommittee = await poolConnection.request().query(`SELECT * from committee_info WHERE committeeKey='${ckey}'`);
+
+        if (foundCommittee.recordset.length === 0) {
+            return false
+        }
+        else {
+            return foundCommittee.recordset;
+        }
+    }
+    catch (err) {
+        console.log("Could not get committee by key:", err)
+    }
 }
 
-export async function joinCommittee(cpassword) {
-    
+export async function getCommitteeMembers(ckey) {
+    try {
+        var poolConnection = await mssql.connect(config);
+
+        var membersInCommittee = await poolConnection.request().query(`SELECT c.userKey, c.username, c.firstName, c.lastName, c.email
+            FROM user_info c
+            JOIN user_committee_junction uc ON c.userKey = uc.userKey
+            JOIN committee_info u ON uc.committeeKey = u.committeeKey
+            WHERE u.committeeKey = '${ckey}'`);
+        
+        if (membersInCommittee.recordset.length === 0) {
+            return false;
+        }
+        else {
+            return membersInCommittee.recordset;
+        }
+
+    }
+    catch (err) {
+        console.log("Could not get committee members:", err)
+    }
 }
 
-export async function deleteCommittee() {
+export async function joinCommittee(currentUserKey, committeeCode) {
+    try {
+        var poolConnection = await mssql.connect(config);
+
+        var committeeToJoin = await poolConnection.request().query(
+            `SELECT committeeKey FROM committee_info WHERE committeePassword='${committeeCode}'`);
+
+        if (committeeToJoin.recordset.length === 0) {
+            console.log("No committee with code found");
+            return false;
+        }
+        else {
+            // store committee key
+            const matchingCommitteeKey = committeeToJoin.recordset[0].committeeKey;
+
+            console.log("committee key:", matchingCommitteeKey);
+
+            // store in junction table
+            var userJoin = await poolConnection.request().query(`INSERT INTO user_committee_junction 
+                (userKey, committeeKey) VALUES ('${currentUserKey}','${matchingCommitteeKey}')`);
+
+            console.log("Committee Joined");
+            return true;
+
+
+        }
+    }
+    catch (err) {
+        console.log("Could not join committee:", err);
+    }
+}
+
+export async function deleteCommittee(committeeKey) {
 
 }
 

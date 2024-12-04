@@ -4,7 +4,7 @@ import { dirname } from 'path';
 
 import express from 'express'
 import cors from 'cors'
-import { getUser, makeUser, getCommittees, createCommittee } from './database.js';
+import { getUser, makeUser, getCommittees, createCommittee, getCommitteeByKey, getCommitteeMembers, joinCommittee } from './database.js';
 import { saveChatMessage, getChatMessages } from './database.js';
 import { getMotion, getMotions, makeMotion } from './database.js';
 
@@ -82,7 +82,7 @@ app.get('/', (req, res) => {
  * upload pfp to server
  * add to database in order: username, password, user object
  */
-app.post("/register", async (req, res) => {
+app.post("/api/register", async (req, res) => {
     const {username, password,fname, lname, email} = req.body;
 
     console.log(fname, lname);
@@ -117,7 +117,7 @@ app.post("/register", async (req, res) => {
 let currentUser;
 
 // User authentication
-app.post("/login", async (req, res) => {
+app.post("/api/login", async (req, res) => {
     const { username, password } = req.body;
     console.log(username, password);
     console.log("login api");
@@ -149,14 +149,14 @@ app.post("/login", async (req, res) => {
 
 
 // Update user
-app.put("/dashboard/profile/update", (req, res) => {
+app.put("/api/dashboard/profile/update", (req, res) => {
 
 });
 
 // Delete user
 
 // Get committees associated with user
-app.post("/dashboard/committee", async (req, res) => {
+app.post("/api/dashboard/committee", async (req, res) => {
     const { currentKey } = req.body;
     const committeesResponse = await getCommittees(currentKey);
 
@@ -164,15 +164,49 @@ app.post("/dashboard/committee", async (req, res) => {
         res.status(404).send("You are not in any committees");
     }
     else {
-        console.log(committeesResponse);
         res.status(200).send({
             userCommittees: committeesResponse
         });
     }
 });
 
+// Get specific committee
+app.get("/api/committee/:committeeKey", async (req,res) => {
+    const committeeKey = req.params.committeeKey;
+
+    console.log("server received", committeeKey);
+
+    const committeeFound = await getCommitteeByKey(committeeKey);
+
+    if (!committeeFound) {
+        res.status(404).send("Committee not found");
+    }
+    else {
+        res.status(200).send({
+            committeeAtKey: committeeFound
+        });
+    }
+
+});
+
+app.get("/api/committee/:committeeKey/users", async (req, res) => {
+    const committeeKey = req.params.committeeKey;
+
+    const committeeFound = await getCommitteeMembers(committeeKey);
+
+    if (!committeeFound) {
+        res.status(404).send("Committee not found");
+    }
+    else {
+        res.status(200).send({
+            committeeMembers: committeeFound
+        });
+    }
+});
+
+
 // Create committee
-app.post("/committee/create", async (req, res) => {
+app.post("/api/committee/create", async (req, res) => {
     const {cname, cpassword,currentUserKey} = req.body;
 
     let currentDate = new Date();
@@ -190,10 +224,10 @@ app.post("/committee/create", async (req, res) => {
     const committeeMade = await createCommittee(cname, cpassword, fullDate, currentUserKey, currentUserKey);
 
     if (!committeeMade) {
-
+        res.status(401).send("Could not create committee");
     }
     else {
-        
+        res.status(200).send("Successfully made committee");
     }
 
 
@@ -202,6 +236,18 @@ app.post("/committee/create", async (req, res) => {
 // Delete committee
 
 // Join committee
+app.post("/api/committee/join", async (req, res) => {
+    const { userCurrent, committeeCode } = req.body;
+
+    const committeeJoined = await joinCommittee(userCurrent, committeeCode);
+
+    if (!committeeJoined) {
+        res.status(401).send("Could not join committee");
+    }
+    else {
+        res.status(200).send("Successfully joined committee");
+    }
+})
 
 // Update committee
 
