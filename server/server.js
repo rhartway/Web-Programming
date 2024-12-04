@@ -33,8 +33,10 @@ app.use(cors({origin: "http://127.0.0.1:5500"}));
  * upload pfp to server
  * add to database in order: username, password, user object
  */
-app.post("/register", (req, res) => {
-    const {fname, lname, username, password,email} = req.body;
+app.post("/register", async (req, res) => {
+    const {username, password,fname, lname, email} = req.body;
+
+    console.log(fname, lname);
     let currentDate = new Date();
 
     let date = ("0" + currentDate.getDate()).slice(-2);
@@ -47,11 +49,20 @@ app.post("/register", (req, res) => {
 
     let fullDate = year + "-" + month + "-" + date;
 
-    makeUser(fname,lname,username,password,email,fullDate);
+    makeUser(username,password,fname,lname,email,fullDate);
+
+    const userInfo = {
+        username: username,
+        password: password,
+        firstName: fname,
+        lastName: lname,
+        email: email
+    }
+
     res.status(200).send({
-        message: "Registration successful",
-        redirect: "http://127.0.0.1:5500/client/index.html"
+        userData: userInfo
     });
+
 });
 
 // Server should store current user 

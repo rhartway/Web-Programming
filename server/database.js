@@ -93,7 +93,7 @@ export async function getUser(username, enteredPassword) {
 
 
 // Turn into prepared statements
-export async function makeUser(fname, lname, username, password, email, date) {
+export async function makeUser(username, password, fname, lname, email, date) {
     try {
         var poolConnection = await mssql.connect(config);
 
@@ -115,7 +115,7 @@ export async function makeUser(fname, lname, username, password, email, date) {
                 console.log("successfully hashed password");
                 // store in database
                 var create = poolConnection.request().query(`INSERT INTO user_info 
-                    (username, password, firstName, lastName,email) VALUES ('${username}','${hash}','${fname}','${lname}','${email}')`);
+                    (username, password, firstName, lastName,email,date_created) VALUES ('${username}','${hash}','${fname}','${lname}','${email}','${date}')`);
 
             })
         });

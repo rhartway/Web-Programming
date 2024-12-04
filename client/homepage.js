@@ -25,4 +25,12 @@ document.getElementById("loginButton").addEventListener("click", (event) => {
     }
 });
 
+document.getElementById("registerButton").addEventListener("click", (event) => {
+    window.location.href = "http://127.0.0.1:5500/client/Login_Page/src/register.html";
+});
+
+document.getElementById("dashboardRedirect").addEventListener("click", (event) => {
+    window.location.href = "http://127.0.0.1:5500/client/Dashboard/dashboard.html";
+});
+
 
