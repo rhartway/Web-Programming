@@ -3,7 +3,7 @@
 
 
 /* menubar stuff */
-.menubar {
+/*.menubar {
     background-color: #2f2f36;
     height: 80;
     padding: 30px;
@@ -26,6 +26,45 @@
 .menubar a.visited {
     color: #cad4da;
     text-decoration: none;
+}*/
+
+* {
+
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+.menubar {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.menubar > button {
+    width: 200px;
+    height: 60px;
+    font-size: 20px;
+    border-radius: 30px;
+    text-align: center;
+    background-color: white;
+}
+
+.menubar > button:hover {
+    background-color: rgb(206, 206, 206);
+}
+
+.contentPanel {
+    width: 90%;
+    height: 500px;
+    background-color: #2f2f36;
+    border-radius: 30px;
+    margin-top: 20px;
 }
 
 /* committee header stuff */
