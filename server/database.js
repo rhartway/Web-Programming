@@ -154,6 +154,85 @@ export async function deleteCommittee() {
 console.log(await getUser("run", "dev"));
 console.log(await getUser("gen5", "bestgen"));*/
 
+
+// Motions stuff
+
+export async function makeMotion(title, desc, creator) {
+    try {
+        var poolConnection = await mssql.connect(config);
+
+        var create = poolConnection.request().query(`INSERT INTO motions 
+            (title, description, creator, date) VALUES ('${title}','${desc}','${creator}', GETDATE())`); //do i need '' around GETDATE()?
+    }
+    catch (err) {
+        console.log("Error creating motion:", err);
+    }
+}
+
+// retrieve all motions
+export async function getMotions() {
+    try {
+        var poolConnection = await mssql.connect(config);
+        const result = await poolConnection.request().query(`
+            SELECT motionKey, title, description, creator, date
+            FROM motions
+            ORDER BY date DESC
+        `);
+        return result.recordset;
+    } catch (err) {
+        console.log("Error retrieving motion:", err);
+        return [];
+    }
+}
+
+
+// retrive a specific motion (idk when id use this but whatevr)
+export async function getMotion(motionID) {
+    try {
+        var poolConnection = await mssql.connect(config);
+        const result = await poolConnection.request().query(`
+            SELECT title, description, creator, date
+            FROM motions
+            WHERE motionID = '${motionID}'
+        `);
+        return result.recordset;
+    } catch (err) {
+        console.log("Error retrieving motion:", err);
+        return [];
+    }
+}
+
+
+// User + Message Stuff
+export async function saveChatMessage(motionID, sender, message) {
+    try {
+        var poolConnection = await mssql.connect(config);
+        await poolConnection.request().query(`
+            INSERT INTO motion_messages (motionID, sender, message)
+            VALUES ('${motionID}', '${sender}', '${message}')
+        `);
+    } catch (err) {
+        console.log("Error saving chat message:", err);
+    }
+}
+
+export async function getChatMessages(motionID) {
+    try {
+        var poolConnection = await mssql.connect(config);
+        const result = await poolConnection.request().query(`
+            SELECT sender, message, timestamp
+            FROM motion_messages
+            WHERE motionID = '${motionID}'
+            ORDER BY timestamp ASC
+        `);
+        return result.recordset;
+    } catch (err) {
+        console.log("Error retrieving chat messages:", err);
+        return [];
+    }
+}
+
+
 console.log("...Starting");
 //connectAndQuery();
 

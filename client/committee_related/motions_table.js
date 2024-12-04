@@ -7,29 +7,40 @@ const tableBody = document.getElementById('tableBody');
 //Date
 
 //update this to grab from database instead later
-const motions = [
-    {
-        motion: 'name of motion',
-        description: 'desc',
-        creator: 'creator', //maybe also grab this from database
-        date: 'date',
-        motionID: 'motionID'
-    }
-]
+async function fetchMotions() {
+  try {
+      const response = await fetch('/api/motions');
+      const motions = await response.json();
+      loadMotionsTable(motions);
+  } catch (err) {
+      console.error('Error fetching motions:', err);
+      const motions = [
+        {
+            motion_name: 'name of motion',
+            description: 'desc',
+            creator: 'creator', //maybe also grab this from database
+            date: 'date',
+            motionID: 'motionID'
+        }
+    ]
+  }
+}
+
+
 
 function loadMotionsTable(motions) {
   //hi
   motions.forEach( item => {
     let row = tableBody.insertRow();
-    row.id = item.motionID; //set motionID as identifier
+    row.id = item.motionKey; //set motionID as identifier
 
     //motion name cell
     let motion = row.insertCell(0);
       //populate cell with motion name and link to motion
     let motionLink = document.createElement('a');
-    motionLink.setAttribute("href", ""); //TODO link to motion page
+    motionLink.setAttribute("href", `/chatroom/${item.motionKey}`); // Link to chatroom
 
-    let linkText = document.createTextNode(item.motion);
+    let linkText = document.createTextNode(item.title);
     motionLink.appendChild(linkText);
 
     motion.appendChild(motionLink);
@@ -156,4 +167,3 @@ $(document).ready(function() {
   });
 });
 loadMotionsTable(motions);
-
