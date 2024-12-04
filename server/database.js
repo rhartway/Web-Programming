@@ -60,7 +60,6 @@ export async function getUser(username, enteredPassword) {
         var getUserRow = await poolConnection.request().query(`SELECT * FROM user_info WHERE username='${username}'`);
         if (getUserRow.recordset.length === 0) {
             // error code: no user found
-            console.log(getUserRow.recordset);
             console.log("No user");
         }
         else {
@@ -93,7 +92,7 @@ export async function getUser(username, enteredPassword) {
 
 
 // Turn into prepared statements
-export async function makeUser(username, password, fname, lname, email, date) {
+export async function makeUser(username, password, fname, lname, email, date,pfp_path) {
     try {
         var poolConnection = await mssql.connect(config);
 
@@ -117,7 +116,7 @@ export async function makeUser(username, password, fname, lname, email, date) {
                 console.log("successfully hashed password");
                 // store in database
                 var create = poolConnection.request().query(`INSERT INTO user_info 
-                    (username, password, firstName, lastName,email,date_created) VALUES ('${username}','${hash}','${fname}','${lname}','${email}','${date}')`);
+                    (username, password, firstName, lastName,email,date_created,pfpPath) VALUES ('${username}','${hash}','${fname}','${lname}','${email}','${date}','${pfp_path}')`);
 
             })
         });

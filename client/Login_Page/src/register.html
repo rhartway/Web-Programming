@@ -18,7 +18,7 @@
     <div class ="login_page">
         <div class ="form-box_login" id="registrationForm">
             <h2>Create a New Account</h2>
-            <form>
+            <form enctype="multipart/form-data">
                 <div class="input_box">
                     <span class="icon"></span>
                     <input type="email" placeholder="Email" name="email" id="email" required>
@@ -45,6 +45,10 @@
                     <span onclick="showPassword_1()">
                         <i class ="fa-regular fa-eye" id=""togglePassword></i>
                     </span>
+                </div>
+                <div class="input_box">
+                    <span class="icon"></span>
+                    <input type="file" id="profileImage" name="profileImage" accept="image/*" required>
                 </div>
                 <div class = "remember-forgot">
                     <label><input type = "checkbox">Remember Me</label>

@@ -7,6 +7,7 @@ import cors from 'cors'
 import { getUser, makeUser, getCommittees, createCommittee, getCommitteeByKey, getCommitteeMembers, joinCommittee } from './database.js';
 import { saveChatMessage, getChatMessages } from './database.js';
 import { getMotion, getMotions, makeMotion } from './database.js';
+import { upload }  from './multerSetup.js'
 
 import bodyParser from 'body-parser';
 import token from 'jsonwebtoken'
@@ -27,7 +28,7 @@ const __dirname = dirname(__filename);
 
 const app = express();
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({extended: true}));
 
 //add server and io for socket
@@ -82,6 +83,8 @@ app.get('/', (req, res) => {
  * upload pfp to server
  * add to database in order: username, password, user object
  */
+
+/*
 app.post("/api/register", async (req, res) => {
     const {username, password,fname, lname, email} = req.body;
 
@@ -100,17 +103,52 @@ app.post("/api/register", async (req, res) => {
 
     makeUser(username,password,fname,lname,email,fullDate);
 
-    // add userkey here
-    /*const userInfo = {
-        username: username,
-        password: password,
-        firstName: fname,
-        lastName: lname,
-        email: email
-    }*/
-
     res.status(200).send("Registration Success");
 
+});
+*/
+
+app.post("/api/register", async (req, res) => {
+    console.log("reached api");
+    upload (req, res, async (err) => {
+        console.log("reached upload");
+        if (err) {
+            return res.status(400).send({ message: "File upload error", error: err.message });
+        }
+
+        const {username, password,fname, lname, email} = req.body;
+
+        if (!req.file) {
+            return res.status(400).send({ message: "Profile image is required" });
+        }
+
+        const profileImagePath = req.file.path; // Path to the uploaded profile image
+        console.log("Profile image uploaded to:", profileImagePath);
+
+        console.log(fname, lname);
+        let currentDate = new Date();
+    
+        let date = ("0" + currentDate.getDate()).slice(-2);
+    
+        // get current month
+        let month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
+    
+        // get current year
+        let year = currentDate.getFullYear();
+    
+        let fullDate = year + "-" + month + "-" + date;
+        try {
+    
+        makeUser(username,password,fname,lname,email,fullDate, profileImagePath);
+    
+        res.status(200).send("Registration Success");
+        }
+        catch (err) {
+            console.log("Could not create user:", err);
+            res.status(401).send("Could not create user");
+        }
+
+    });
 });
 
 // Server should store current user 
@@ -134,7 +172,8 @@ app.post("/api/login", async (req, res) => {
             password: result.password,
             fname: result.firstName,
             lname: result.lastName,
-            email: result.email
+            email: result.email,
+            pfp: result.pfpPath
         }
 
         currentUser = userInfo;

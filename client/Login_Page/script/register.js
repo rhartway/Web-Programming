@@ -4,33 +4,35 @@ const registerButton = document.getElementById("sign_up_btn");
 
 registerButton.addEventListener("click", async (event) => {
     event.preventDefault();
-    const response = await fetch(`${server}/api/register`, { 
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            username: document.getElementById("username").value,
-            password: document.getElementById("password").value,
-            fname: document.getElementById("fname").value,
-            lname: document.getElementById("lname").value,
-            email: document.getElementById("email").value
-        })
-    });
+
+    const formData = new FormData();
+    formData.append("username", document.getElementById("username").value);
+    formData.append("password", document.getElementById("password").value);
+    formData.append("fname", document.getElementById("fname").value);
+    formData.append("lname", document.getElementById("lname").value);
+    formData.append("email", document.getElementById("email").value);
+    formData.append("profileImage", document.getElementById("profileImage").files[0]);
     
-    if (response.ok) {
-        /*console.log("Registration");
-        const currentUser = await response.json();
-        console.log(JSON.stringify(currentUser));
-        sessionStorage.setItem("userInfo", JSON.stringify(currentUser));*/
+    try {
+        console.log("sending data"); // prints 
+        const response = await fetch(`${server}/api/register`, { 
+            method: "POST",
+            body: formData
+        });
+        
+        if (response.ok) {
+            console.log("sent and received data"); // does not print
+            window.location.replace("http://127.0.0.1:5500/client/Login_Page/src/index.html");   
+        }
+        else {
+            var errorCode = document.createElement("p");
+            errorCode.textContent = "Registration Failed. Please Try Again";
+            errorCode.style.color = "red";
 
-        window.location.replace("http://127.0.0.1:5500/client/Login_Page/src/index.html");   
+            document.getElementById("registrationForm").appendChild(errorCode);
+        }
     }
-    else {
-        var errorCode = document.createElement("p");
-        errorCode.textContent = "Registration Failed. Please Try Again";
-        errorCode.style.color = "red";
-
-        document.getElementById("registrationForm").appendChild(errorCode);
+    catch (err) {
+        console.log("Could not send data to server"); // prints
     }
-})
+});

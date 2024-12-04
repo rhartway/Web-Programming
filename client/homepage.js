@@ -12,6 +12,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (registerButton) {
             registerButton.parentNode.removeChild(registerButton);
         }
+
+        console.log(user.userData);
+        document.getElementById("profileImage").setAttribute("src",`..\\server\\${user.userData.pfp}`);
     }
 });
 
