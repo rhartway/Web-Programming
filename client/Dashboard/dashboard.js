@@ -1,10 +1,24 @@
+const user_key = 0;
+
 document.addEventListener("DOMContentLoaded", () => {
     const user = JSON.parse(sessionStorage.getItem("userInfo"));
 
     if (user) {
+
+        // populate userKey
+        user_key = user.userData.userKey;
         // populate profile
+        console.log(user.userData);
+
+        document.getElementById("fname").textContent = user.userData.fname;
+
+        document.getElementById("lname").textContent = user.userData.lname;
+
+        document.getElementById("emailtext").textContent = user.userData.email;
 
         // populate committees
+
+        // request server
 
         // populate inbox
 

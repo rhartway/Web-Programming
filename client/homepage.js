@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (user) {
         document.getElementById("dashboardRedirect").disabled = false;
-        document.getElementById("dashboardRedirect").textContent = "Dashboard";
+        document.getElementById("dashboardRedirect").textContent = `${user.userData.fname} ${user.userData.lname}'s Dashboard`;
 
         document.getElementById("loginButton").textContent = "Log out";
         const registerButton = document.getElementById("registerButton");
