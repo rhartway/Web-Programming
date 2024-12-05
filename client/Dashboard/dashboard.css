@@ -65,8 +65,24 @@ body {
     background-color: #2f2f36;
     border-radius: 30px;
     margin-top: 20px;
+    padding-left: 40px;
+  padding-top: 20px;
+  
 }
 
+.contentPanel p {
+  justify-items: left;
+  text-align: left;
+  
+}
+
+#panel1 p {
+  text-align: center;
+}
+
+.contentPanel .descriptionPanel {
+  padding: 30px;
+}
 /* committee header stuff */
 
 .committee_header{

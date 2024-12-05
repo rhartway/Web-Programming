@@ -46,7 +46,19 @@ const port = 8080;
  * store in database
  */
 
-app.use(cors({origin: "http://127.0.0.1:5500"}));
+//app.use(cors({origin: "http://127.0.0.1:5500"}));
+
+const allowedOrigins = [
+    "http://127.0.0.1:5500", // Development
+    "https://web-programming-3wtf.vercel.app/" // Production
+  ];
+  
+  // Configure CORS middleware
+  app.options("*", cors());
+
+  app.use(
+    cors({ origin: "*"})
+  );
 
 //set io instance
 setIoInstance(io);
