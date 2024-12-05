@@ -76,6 +76,10 @@ body {
   
 }
 
+#panel1 p {
+  text-align: center;
+}
+
 .contentPanel .descriptionPanel {
   padding: 30px;
 }
