@@ -15,7 +15,7 @@ async function loadCommitteeDetails() {
         //console.log(parsedInfo.committeeAtKey[0].committeeName);
 
         // display info
-        document.getElementById("committeeTitle").textContent = parsedInfo.committeeAtKey[0].committeeName;
+        document.getElementById("committeeTitle").textContent = `${parsedInfo.committeeAtKey[0].committeeName}`;
     }
     else {
         // failed to fetch committee info

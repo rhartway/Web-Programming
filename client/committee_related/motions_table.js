@@ -26,7 +26,7 @@ async function fetchMotionByCommittee()
 
 async function loadMotionsTable(motions) {
   //hi
-  console.log("hi this is the motions: ", motions);
+  //console.log("hi this is the motions: ", motions);
   motions.forEach( item => {
     let row = tableBody.insertRow();
     row.id = item.motionKey; //set motionID as identifier
@@ -172,7 +172,7 @@ $(document).ready(function() {
           });
         }
       });
-  }, 250); //small delay because this loads faster than data
+  }, 400); //small delay because this loads faster than data
 
   
 });
