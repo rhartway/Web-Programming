@@ -54,6 +54,8 @@ const allowedOrigins = [
   ];
   
   // Configure CORS middleware
+  app.options("*", cors());
+
   app.use(
     cors({ origin: "*"})
   );
