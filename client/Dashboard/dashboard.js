@@ -16,11 +16,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         // populate profile
         console.log(user.userData);
 
-        document.getElementById("fname").textContent = user.userData.fname;
+        document.getElementById("flname").textContent = "Name: "+ user.userData.fname + " " + user.userData.lname;
 
-        document.getElementById("lname").textContent = user.userData.lname;
+        // document.getElementById("lname").textContent = user.userData.lname;
+        document.getElementById('username').textContent = "Username: "+user.userData.username;
 
-        document.getElementById("emailtext").textContent = user.userData.email;
+        document.getElementById("emailtext").textContent = "Email: " +user.userData.email;
 
         // populate committees
 
