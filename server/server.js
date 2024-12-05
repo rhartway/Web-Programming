@@ -55,20 +55,7 @@ const allowedOrigins = [
   
   // Configure CORS middleware
   app.use(
-    cors({
-      origin: (origin, callback) => {
-        // Allow requests with no origin (like mobile apps or curl)
-        if (!origin) return callback(null, true);
-  
-        // Allow only specified origins
-        if (allowedOrigins.includes(origin)) {
-          return callback(null, true);
-        }
-  
-        // Reject other origins
-        return callback(new Error("Not allowed by CORS"));
-      }
-    })
+    cors({ origin: process.env.ORIGIN, credentials: process.env.CREDENTIALS })
   );
 
 //set io instance
