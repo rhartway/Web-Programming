@@ -22,7 +22,8 @@ registerButton.addEventListener("click", async (event) => {
         
         if (response.ok) {
             console.log("sent and received data"); // does not print
-            window.location.replace("../src/index.html");   
+            //window.location.replace("../src/index.html");   
+            window.location.replace("http://127.0.0.1:5500/client/Login_page/src/index.html");
         }
         else {
             var errorCode = document.createElement("p");
