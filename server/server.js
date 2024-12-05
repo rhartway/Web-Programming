@@ -54,11 +54,13 @@ const allowedOrigins = [
   ];
   
   // Configure CORS middleware
-  app.options("*", cors());
+  // app.options("*", cors());
 
-  app.use(
-    cors({ origin: "*"})
-  );
+/*app.use(
+cors({ origin: "*"})
+);*/
+
+app.use(cors({origin: "http://127.0.0.1:5500"}))
 
 //set io instance
 setIoInstance(io);
