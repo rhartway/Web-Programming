@@ -46,7 +46,7 @@ async function fetchUsersByCommittee()
             member.firstName = "Archer";
         }
         if (member.lastName == null || member.lastName == undefined || member.lastName == "" || member.lastName == "undefined") {
-            member.lastName = "Cherar";
+            member.lastName = "";
         }
     });
     //console.log("meow", members);
@@ -104,7 +104,7 @@ function displayMembers(members) {
                         </div>
                         <div class="name">
                             <p>${member.firstName} ${member.lastName}</p>
-                            <span>${member.email}</span>
+                            <span><a href="mailto:${member.email}">${member.email}</a></span>
                         </div>
                         <div class="role"> </div>
                     `;// <div class="role">${member.role}</div>

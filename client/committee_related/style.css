@@ -153,6 +153,17 @@ border-radius: 10px;
   font-size: 10px;
   margin-right: 20px;
 }
+.member .name a{
+  opacity: 0.7;
+  font-weight: normal;
+  color:#b6c4d6;
+  text-decoration: none;
+
+}
+
+.member .name a:hover{
+  color:#7184ac;
+}
 
 .member img{
   width: 45px;
@@ -351,7 +362,7 @@ body {
       transition:color .2s ease-out, background 1s ease-in;
     }
     a:hover{ 
-      color:#4759b3; background: #14141a; }
+      color:#3a488a; background: #14141a; }
     
     
     ::selection {

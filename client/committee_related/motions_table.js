@@ -35,8 +35,8 @@ async function loadMotionsTable(motions) {
     let motion = row.insertCell(0);
       //populate cell with motion name and link to motion
     let motionLink = document.createElement('a');
-    //motionLink.setAttribute("href", `/chatroom/${item.motionKey}`); // Link to chatroom
-    motionLink.setAttribute("href", `/chatroom`); // Link to chatroom
+    motionLink.setAttribute("href", `/chatroom/${item.motionKey}`); // Link to chatroom
+    //motionLink.setAttribute("href", `/chatroom/$(item.motionKey)`); // Link to chatroom
 
     let linkText = document.createTextNode(item.title);
     motionLink.appendChild(linkText);
