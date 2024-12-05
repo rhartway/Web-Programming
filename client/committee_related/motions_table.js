@@ -1,36 +1,24 @@
 const motionsTable = document.getElementById('motionsTable');
 const tableBody = document.getElementById('tableBody');
-const server = "http://localhost:8080/";
 
-//<Motion
-//Description
-//Creator
-//Date
+async function fetchMotionByCommittee()
+{
+  //get committee key from url
+  const queryParams = new URLSearchParams(window.location.search);
+  const committeeKey = queryParams.get('committeeKey');
 
+  //fetch motions by committee(key)
+  const motionsByCommittee = await fetch(`${server}/api/motions/${committeeKey}`);
 
-
-//update this to grab from database instead later
-let motions
-
-async function fetchMotions() {
-  try {
-      const response = await fetch(`${server}/api/motions`);
-      const motions = await response.json();
-      console.log(motions);
-
-
-      await loadMotionsTable(motions);
-  } catch (err) {
-      console.error('Error fetching motions:', err);
-      const motions = [
-        {
-            motion_name: 'name of motion',
-            description: 'desc',
-            creator: 'creator', //maybe also grab this from database
-            date: 'date',
-            motionID: 'motionID'
-        }
-    ]
+  if (motionsByCommittee.ok)
+  {
+    //load associated motions into table
+    const motions = await motionsByCommittee.json();
+    loadMotionsTable(motions);
+  }
+  else
+  {
+    console.log("failed to fetch motions by committee");
   }
 }
 
@@ -38,7 +26,7 @@ async function fetchMotions() {
 
 async function loadMotionsTable(motions) {
   //hi
-  console.log("hi");
+  console.log("hi this is the motions: ", motions);
   motions.forEach( item => {
     let row = tableBody.insertRow();
     row.id = item.motionKey; //set motionID as identifier
@@ -76,7 +64,7 @@ async function loadMotionsTable(motions) {
 
 
 
-fetchMotions();
+fetchMotionByCommittee();
 
 
 $(document).ready(function() {

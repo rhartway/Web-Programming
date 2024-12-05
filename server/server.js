@@ -6,7 +6,7 @@ import express from 'express'
 import cors from 'cors'
 import { getUser, makeUser, getCommittees, createCommittee, getCommitteeByKey, getCommitteeMembers, joinCommittee } from './database.js';
 import { saveChatMessage, getChatMessages } from './database.js';
-import { getMotion, getMotions, makeMotion } from './database.js';
+import { getMotionByKey, getMotions, getMotionsByCommittee, makeMotion} from './database.js';
 import { upload }  from './multerSetup.js'
 
 import bodyParser from 'body-parser';
@@ -302,6 +302,7 @@ app.post("/api/committee/join", async (req, res) => {
  * like getting motions and making them
  * and stuff
  */
+// get all motions
 app.get('/api/motions', async (req, res) => {
     try {
         const motions = await getMotions();
@@ -311,6 +312,18 @@ app.get('/api/motions', async (req, res) => {
     }
 });
 
+// get motions from a specific committee
+app.get('/api/motions/:committeeKey', async (req, res) => {
+    console.log("r", req)
+    const committeeKey = req.params.committeeKey;
+    try {
+        const motions = await getMotionsByCommittee(committeeKey);
+        res.json(motions);
+    } catch (err) {
+        console.error("Error retrieving motions:", err);
+        res.status(500).send("Error retrieving motions");
+    }
+});
 //TODO: API for making a motion, retrieving specific motion
 
 // Create + Join + Delete Meeting/Chat Room
