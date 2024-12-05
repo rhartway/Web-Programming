@@ -55,7 +55,7 @@ const allowedOrigins = [
   
   // Configure CORS middleware
   app.use(
-    cors({ origin: process.env.ORIGIN, credentials: process.env.CREDENTIALS })
+    cors({ origin: "*"})
   );
 
 //set io instance
