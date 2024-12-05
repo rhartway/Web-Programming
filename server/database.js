@@ -294,7 +294,7 @@ export async function getMotions() {
 
 
 // retrive a specific motion (idk when id use this but whatevr)
-export async function getMotion(motionKey) {
+export async function getMotionByKey(motionKey) {
     try {
         var poolConnection = await mssql.connect(config);
         const result = await poolConnection.request().query(`
@@ -309,6 +309,21 @@ export async function getMotion(motionKey) {
     }
 }
 
+export async function getMotionsByCommittee(committeeKey) {
+    try {
+        var poolConnection = await mssql.connect(config);
+        const result = await poolConnection.request().query(`
+            SELECT *
+            FROM motions
+            WHERE committeeKey = '${committeeKey}'
+            ORDER BY date DESC
+        `);
+        return result.recordset;
+    } catch (err) {
+        console.log("Error retrieving motions by committeeKey:", err);
+        return [];
+    }
+}
 
 // User + Message Stuff
 export async function saveChatMessage(motionKey, sender, message) {
