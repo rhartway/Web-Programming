@@ -19,7 +19,34 @@ import { createServer } from "node:http";
 import {handleChatConnection} from "./chatController.js"; 
 import {setIoInstance} from './chatController.js';
 
+/**NOTES AND TIPS **/
 
+// HTTP Methods
+// POST - send data to server, usually to create a new resource
+// GET - request data from server
+// PUT - update a resource (there probably isn't a need to use this for this project)
+// DELETE - delete a resource
+
+// endpoint on server and fetch method in frontend must be the same
+// Example: login uses fetch with post method on frontend (script.js) so /api/login must also use app.post()
+// response codes are important: 200 means OK, 401 means authentication error, 404 is not found error, 500 is internal server error
+// Sending a response code from the server and using response.ok on the frontend returns true if the response code is between 200-299
+// res: response, req: request
+// URL parameters are a way to send information to the server without using a POST request
+    // How they work: user adds ?key=value at the end of a url
+    // server can receive it at the endpoint /api/:value and use const value = req.params.key
+// Use req.body with POST and PUT
+// Use req.params for GET and DELETE with query parameters
+
+
+
+/**TO DO **/
+// CRUD - create, read, update, delete
+// Need CRUD for users, committees, motions (at least 12 endpoints)
+// Users - Create and Read done, Update and Delete need to be implemented (use POST for update)
+// Committees - Create, Read, Update done, Delete needed (only chairman/creator can delete)
+// Motions - Create and Read done, Update and Delete need to be implemented (update = upvotes and downvotes)
+// Remaining endpoints: At least 5
 
 
 
@@ -114,32 +141,8 @@ app.get('/', (req, res) => {
  * upload pfp to server
  * add to database in order: username, password, user object
  */
-
-/*
-app.post("/api/register", async (req, res) => {
-    const {username, password,fname, lname, email} = req.body;
-
-    console.log(fname, lname);
-    let currentDate = new Date();
-
-    let date = ("0" + currentDate.getDate()).slice(-2);
-
-    // get current month
-    let month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
-
-    // get current year
-    let year = currentDate.getFullYear();
-
-    let fullDate = year + "-" + month + "-" + date;
-
-    makeUser(username,password,fname,lname,email,fullDate);
-
-    res.status(200).send("Registration Success");
-
-});
-*/
-
-app.post("/api/register", async (req, res) => {
+app.post("/api/register", async (req, res) => { // make sure to have async in each endpoint 
+    // since it takes time to fetch from database
     console.log("reached api");
     upload (req, res, async (err) => {
         console.log("reached upload");
@@ -147,16 +150,15 @@ app.post("/api/register", async (req, res) => {
             return res.status(400).send({ message: "File upload error", error: err.message });
         }
 
-        const {username, password,fname, lname, email} = req.body;
+        const {username, password,fname, lname, email} = req.body; // receive data from request
 
         if (!req.file) {
             return res.status(400).send({ message: "Profile image is required" });
         }
 
         const profileImagePath = req.file.path; // Path to the uploaded profile image
-        console.log("Profile image uploaded to:", profileImagePath);
 
-        console.log(fname, lname);
+        // get current date
         let currentDate = new Date();
     
         let date = ("0" + currentDate.getDate()).slice(-2);
@@ -166,11 +168,12 @@ app.post("/api/register", async (req, res) => {
     
         // get current year
         let year = currentDate.getFullYear();
-    
+        
+        // create string
         let fullDate = year + "-" + month + "-" + date;
         try {
     
-        makeUser(username,password,fname,lname,email,fullDate, profileImagePath);
+        makeUser(username,password,fname,lname,email,fullDate, profileImagePath); // send image to database
     
         res.status(200).send("Registration Success");
         }
@@ -182,18 +185,14 @@ app.post("/api/register", async (req, res) => {
     });
 });
 
-// Server should store current user 
-let currentUser;
 
 // User authentication
 app.post("/api/login", async (req, res) => {
-    const { username, password } = req.body;
-    console.log(username, password);
-    console.log("login api");
-    const result = await getUser(username, password);
+    const { username, password } = req.body; // receive username and password from frontend
+    const result = await getUser(username, password); // send info to database method, store in result
     // const result = getUser(username, password);
 
-    if (!result) {
+    if (!result) { // database returns false if user not found or password incorrect
         res.status(401).send("User not found or password incorrect");
     }
     else {
@@ -207,10 +206,8 @@ app.post("/api/login", async (req, res) => {
             pfp: result.pfpPath
         }
 
-        currentUser = userInfo;
-        // redirect to home page
-        res.status(200).send({
-            userData: userInfo
+        res.status(200).send({ 
+            userData: userInfo // send response code and user data up to frontend
         });
     }
     
@@ -224,11 +221,14 @@ app.put("/api/dashboard/profile/update", (req, res) => {
 });
 
 // Delete user
+app.delete("api/:user/delete", (req, res) => {
+
+});
 
 // Get committees associated with user
 app.post("/api/dashboard/committee", async (req, res) => {
-    const { currentKey } = req.body;
-    const committeesResponse = await getCommittees(currentKey);
+    const { currentKey } = req.body; // server receives current user key
+    const committeesResponse = await getCommittees(currentKey); // gets all committees the user is in
 
     if (!committeesResponse) {
         res.status(404).send("You are not in any committees");
@@ -241,35 +241,36 @@ app.post("/api/dashboard/committee", async (req, res) => {
 });
 
 // Get specific committee
-app.get("/api/committee/:committeeKey", async (req,res) => {
-    const committeeKey = req.params.committeeKey;
 
-    console.log("server received", committeeKey);
+// Used in committee_template.js, URL parameter set in dashboard.js
+app.get("/api/committee/:committeeKey", async (req,res) => { // this one uses URL parameters to get the key of the committee the user clicked
+    const committeeKey = req.params.committeeKey; // store key of committee
 
-    const committeeFound = await getCommitteeByKey(committeeKey);
+    const committeeFound = await getCommitteeByKey(committeeKey); // send to database
 
     if (!committeeFound) {
         res.status(404).send("Committee not found");
     }
     else {
         res.status(200).send({
-            committeeAtKey: committeeFound
+            committeeAtKey: committeeFound // respond with committee data
         });
     }
 
 });
 
-app.get("/api/committee/:committeeKey/users", async (req, res) => {
-    const committeeKey = req.params.committeeKey;
+// Used in committee_template.js, URL parameter set in dashboard.js
+app.get("/api/committee/:committeeKey/users", async (req, res) => { // this one too
+    const committeeKey = req.params.committeeKey; // key of committee that is clicked
 
-    const committeeFound = await getCommitteeMembers(committeeKey);
+    const committeeFound = await getCommitteeMembers(committeeKey); // remember to put await before database functions
 
     if (!committeeFound) {
         res.status(404).send("Committee not found");
     }
     else {
         res.status(200).send({
-            committeeMembers: committeeFound
+            committeeMembers: committeeFound // respond with members in committee
         });
     }
 });
@@ -277,20 +278,16 @@ app.get("/api/committee/:committeeKey/users", async (req, res) => {
 
 // Create committee
 app.post("/api/committee/create", async (req, res) => {
-    const {cname, cpassword,currentUserKey} = req.body;
+    const {cname, cpassword,currentUserKey} = req.body; // server receives committee name and password and the key of the user making it
 
+    // create date
     let currentDate = new Date();
-
     let date = ("0" + currentDate.getDate()).slice(-2);
-
-    // get current month
     let month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
-
-    // get current year
     let year = currentDate.getFullYear();
-
     let fullDate = year + "-" + month + "-" + date;
 
+    // send to database
     const committeeMade = await createCommittee(cname, cpassword, fullDate, currentUserKey, currentUserKey);
 
     if (!committeeMade) {
@@ -305,10 +302,10 @@ app.post("/api/committee/create", async (req, res) => {
 // Delete committee
 
 // Join committee
-app.post("/api/committee/join", async (req, res) => {
-    const { userCurrent, committeeCode } = req.body;
+app.post("/api/committee/join", async (req, res) => { 
+    const { userCurrent, committeeCode } = req.body; // server receives committee code and the user who wants to join
 
-    const committeeJoined = await joinCommittee(userCurrent, committeeCode);
+    const committeeJoined = await joinCommittee(userCurrent, committeeCode); //update database
 
     if (!committeeJoined) {
         res.status(401).send("Could not join committee");
@@ -359,6 +356,8 @@ app.post("/api/motion/make", async (req, res) => {
 
 
 });
+
+
 // Delete motion
 
 // 

@@ -5,24 +5,15 @@ import mssql from "mssql"
 
 
 
-// committee user relationship - n:m
+
 
 env.config();
 
-/*const connection = mysql.createPool({
-    host: process.env.MYSQL_HOST,
-    user: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_DATABASE
-}).promise();*/
+/** NOTES AND TIPS **/
 
-/*GET USER
-    - First: Search for username
-    - If username does not exist, return error message "No such user"
-    - If user does exist, compare passwords
-    - Passwords do not match, return error message "incorrect password"
-    - Else, authenticate
-*/
+// Use template strings to build queries
+// desired data is usually stored in .recordset[0]
+
 
 
 const config = {
@@ -54,10 +45,10 @@ async function connectAndQuery() {
 }
 
 export async function getUser(username, enteredPassword) {
-    var poolConnection = await mssql.connect(config);
+    var poolConnection = await mssql.connect(config); // wait until connection is complete
     try {
         // check if username in table
-        var getUserRow = await poolConnection.request().query(`SELECT * FROM user_info WHERE username='${username}'`);
+        var getUserRow = await poolConnection.request().query(`SELECT * FROM user_info WHERE username='${username}'`); // build query
         if (getUserRow.recordset.length === 0) {
             // error code: no user found
             console.log("No user");
@@ -65,7 +56,7 @@ export async function getUser(username, enteredPassword) {
         else {
             console.log("else triggered");
             // retrieve user password
-            var userPassword = await getUserRow.recordset[0].password;
+            var userPassword = await getUserRow.recordset[0].password; // desired data stored in .recordset[0] (in this case, contains key, username, password, first name, last name, email, pfp file path)
 
             const res = await bcrypt.compare(enteredPassword, userPassword);
             console.log("found user");

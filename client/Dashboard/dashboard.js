@@ -4,6 +4,8 @@ const server = "http://localhost:8080";
 
 let user_key = 0;
 
+
+
 document.addEventListener("DOMContentLoaded", async () => {
     const user = JSON.parse(sessionStorage.getItem("userInfo"));
 
