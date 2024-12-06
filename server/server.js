@@ -321,18 +321,6 @@ app.post("/api/committee/join", async (req, res) => {
 // Update committee
 
 // Get motion
-
-// Create motion
-//app.post() 
-
-// Delete motion
-
-// 
-
-/* Motion stuff
- * like getting motions and making them
- * and stuff
- */
 // get all motions
 app.get('/api/motions', async (req, res) => {
     try {
@@ -355,6 +343,33 @@ app.get('/api/motions/:committeeKey', async (req, res) => {
         res.status(500).send("Error retrieving motions");
     }
 });
+
+// Create motion
+app.post("/api/motion/make", async (req, res) => {
+    const {title, desc, creator, committeeKey, creatorKey} = req.body;
+
+    const motionMade = await makeMotion(title, desc, creator, committeeKey, creatorKey);
+
+    if (!motionMade) {
+        res.status(401).send("Could not create motion");
+    }
+    else {
+        res.status(200).send("Successfully made motion");
+    }
+
+
+});
+// Delete motion
+
+// 
+
+/* Motion stuff
+ * like getting motions and making them
+ * and stuff
+ */
+
+
+
 //TODO: API for making a motion, retrieving specific motion
 
 // Create + Join + Delete Meeting/Chat Room

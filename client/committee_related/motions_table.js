@@ -26,7 +26,7 @@ async function fetchMotionByCommittee()
 
 async function loadMotionsTable(motions) {
   //hi
-  console.log("hi this is the motions: ", motions);
+  //console.log("hi this is the motions: ", motions);
   motions.forEach( item => {
     let row = tableBody.insertRow();
     row.id = item.motionKey; //set motionID as identifier
@@ -35,8 +35,8 @@ async function loadMotionsTable(motions) {
     let motion = row.insertCell(0);
       //populate cell with motion name and link to motion
     let motionLink = document.createElement('a');
-    //motionLink.setAttribute("href", `/chatroom/${item.motionKey}`); // Link to chatroom
-    motionLink.setAttribute("href", `/chatroom`); // Link to chatroom
+    motionLink.setAttribute("href", `/chatroom/${item.motionKey}`); // Link to chatroom
+    //motionLink.setAttribute("href", `/chatroom/$(item.motionKey)`); // Link to chatroom
 
     let linkText = document.createTextNode(item.title);
     motionLink.appendChild(linkText);
@@ -172,7 +172,7 @@ $(document).ready(function() {
           });
         }
       });
-  }, 250); //small delay because this loads faster than data
+  }, 400); //small delay because this loads faster than data
 
   
 });

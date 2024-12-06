@@ -202,7 +202,7 @@ export async function getCommitteeMembers(ckey) {
     try {
         var poolConnection = await mssql.connect(config);
 
-        var membersInCommittee = await poolConnection.request().query(`SELECT c.userKey, c.username, c.firstName, c.lastName, c.email
+        var membersInCommittee = await poolConnection.request().query(`SELECT c.userKey, c.username, c.firstName, c.lastName, c.email, c.pfpPath
             FROM user_info c
             JOIN user_committee_junction uc ON c.userKey = uc.userKey
             JOIN committee_info u ON uc.committeeKey = u.committeeKey
@@ -264,12 +264,14 @@ console.log(await getUser("gen5", "bestgen"));*/
 
 // Motions stuff
 
-export async function makeMotion(title, desc, creator) {
+export async function makeMotion(title, desc, creator, committeeKey, creatorKey) {
     try {
         var poolConnection = await mssql.connect(config);
 
         var create = poolConnection.request().query(`INSERT INTO motions 
-            (title, description, creator, date) VALUES ('${title}','${desc}','${creator}', GETDATE())`); //do i need '' around GETDATE()?
+            (title, description, creator, committeeKey, creatorKey, date) 
+            VALUES ('${title}','${desc}','${creator}', '${committeeKey}', '${creatorKey}', GETDATE())`); 
+            //do i need '' around GETDATE()?
     }
     catch (err) {
         console.log("Error creating motion:", err);
