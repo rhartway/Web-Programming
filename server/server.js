@@ -52,6 +52,23 @@ const allowedOrigins = [
     "http://127.0.0.1:5500", // Development
     "https://web-programming-3wtf.vercel.app/" // Production
   ];
+
+app.use(
+cors({
+    origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+
+    // Allow only specified origins
+    if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+    }
+
+    // Reject other origins
+    return callback(new Error("Not allowed by CORS"));
+    }
+})
+);
   
   // Configure CORS middleware
   // app.options("*", cors());
@@ -60,7 +77,7 @@ const allowedOrigins = [
 cors({ origin: "*"})
 );*/
 
-app.use(cors({origin: "http://127.0.0.1:5500"}))
+// app.use(cors({origin: "http://127.0.0.1:5500"}))
 
 //set io instance
 setIoInstance(io);
@@ -283,7 +300,6 @@ app.post("/api/committee/create", async (req, res) => {
         res.status(200).send("Successfully made committee");
     }
 
-
 });
 
 // Delete committee
@@ -307,6 +323,7 @@ app.post("/api/committee/join", async (req, res) => {
 // Get motion
 
 // Create motion
+//app.post() 
 
 // Delete motion
 
