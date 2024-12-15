@@ -1,5 +1,7 @@
 const motionsTable = document.getElementById('motionsTable');
 const tableBody = document.getElementById('tableBody');
+let currentUserData = JSON.parse(sessionStorage.getItem("userInfo"));
+let currentUserNum = currentUserData.userData.key;
 
 async function fetchMotionByCommittee()
 {
@@ -27,7 +29,8 @@ async function fetchMotionByCommittee()
 async function loadMotionsTable(motions) {
   //hi
   //console.log("hi this is the motions: ", motions);
-  motions.forEach( item => {
+  motions.forEach( async (item) => {
+
     let row = tableBody.insertRow();
     row.id = item.motionKey; //set motionID as identifier
 
@@ -57,8 +60,87 @@ async function loadMotionsTable(motions) {
     let date = row.insertCell(3);
     let dateText = document.createTextNode(item.date);
     date.appendChild(dateText);
+
+    // get votes for each motion
+    let votesNum = 0;
+    const countVotes = await fetch(`${server}/api/motion/getVotes`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        motionNum: item.motionKey
+      })
+    });
+
+    if (countVotes.ok) {
+      const votesResponse = await countVotes.json();
+      votesNum = votesResponse.votes;
+      console.log(votesNum);
+    }
+    else {
+      console.log("could not count votes");
+    }
+
+    // upvote Button
+    let upvote = row.insertCell(4);
+    let upvoteDiv = document.createElement("div");
+    let upvoteNum = document.createElement("p");
+    upvoteNum.setAttribute("id", `motion-${item.motionKey}-upvoteCount`);
+    upvoteNum.textContent = votesNum;
+    let upvoteButton = document.createElement("button");
+
+    upvoteDiv.style = 'display: flex; gap: 5px; justify-content: center';
+    upvoteButton.setAttribute(`id`, `motion-${item.motionKey}-upvote`);
+    upvoteButton.setAttribute("class", "upvoteButton");
+    upvoteButton.textContent = "upvote";
+
+    upvoteButton.addEventListener("click", async (event) => {
+        const upvoteResponse = await fetch(`${server}/api/motion/vote`, {
+          method: "POST", 
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            userID: currentUserNum,
+            motionID: item.motionKey
+          })
+        });
+
+        if (upvoteResponse.ok) {
+            // rerender with updated votes
+            const numVotes = await upvoteResponse.json();
+            document.getElementById(`motion-${item.motionKey}-upvoteCount`).textContent = numVotes.votes;
+            
+        }
+        else {
+            console.log("Could not update vote");
+        } 
+    });
+
+    upvoteDiv.appendChild(upvoteButton);
+    upvoteDiv.appendChild(upvoteNum);
+    upvote.appendChild(upvoteDiv);
+
+    // downvote Button
+    /*let downvote = row.insertCell(5);
+    let downvoteDiv = document.createElement("div");
+    let downvoteNum = document.createElement("p");
+    let downvoteButton = document.createElement("button");
+
+    downvoteNum.setAttribute("id", `motion-${item.motionKey}-downvoteCount`);
+    downvoteNum.textContent = item.downvoteCount;
+    downvoteDiv.style = 'display: flex; gap: 5px; justify-content: center';
+    downvoteButton.setAttribute(`id`, `motion-${item.motionKey}-downvote`);
+    downvoteButton.setAttribute("class", "downvoteButton");
+    downvoteButton.textContent = "downvote";
+
+    downvoteDiv.appendChild(downvoteButton);
+    downvoteDiv.appendChild(downvoteNum);
+    downvote.appendChild(downvoteDiv);*/
   })
 }
+
 
 
 
@@ -85,6 +167,7 @@ $(document).ready(function() {
           { sWidth: '25%' }, //filename
           { sWidth: '25%' }, //year
           { sWidth: '25%' }, //edition
+          { sWidth: '25%' },
         ],
         responsive: true,
         columnDefs: [

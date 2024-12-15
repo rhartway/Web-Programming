@@ -4,9 +4,9 @@ import { dirname } from 'path';
 
 import express from 'express'
 import cors from 'cors'
-import { getUser, makeUser, getCommittees, createCommittee, getCommitteeByKey, getCommitteeMembers, joinCommittee } from './database.js';
+import { getUser, makeUser, getCommittees, createCommittee, getCommitteeByKey, getCommitteeMembers, joinCommittee, updateMotion, getMotionVotesByKey } from './database.js';
 import { saveChatMessage, getChatMessages } from './database.js';
-import { getMotionByKey, getMotions, getMotionsByCommittee, makeMotion} from './database.js';
+import { getMotions, getMotionsByCommittee, makeMotion} from './database.js';
 import { upload }  from './multerSetup.js'
 
 import bodyParser from 'body-parser';
@@ -20,7 +20,7 @@ import {handleChatConnection} from "./chatController.js";
 import {setIoInstance} from './chatController.js';
 
 /**NOTES AND TIPS **/
-
+ 
 // HTTP Methods
 // POST - send data to server, usually to create a new resource
 // GET - request data from server
@@ -330,7 +330,7 @@ app.get('/api/motions', async (req, res) => {
 
 // get motions from a specific committee
 app.get('/api/motions/:committeeKey', async (req, res) => {
-    console.log("r", req)
+    //console.log("r", req)
     const committeeKey = req.params.committeeKey;
     try {
         const motions = await getMotionsByCommittee(committeeKey);
@@ -353,9 +353,38 @@ app.post("/api/motion/make", async (req, res) => {
     else {
         res.status(200).send("Successfully made motion");
     }
-
-
 });
+
+// update / vote on motion
+app.post("/api/motion/vote", async (req, res) => {
+    const {userID, motionID} = req.body;
+
+    //console.log(userID, motionID);
+
+    const motionUpdate = await updateMotion(userID, motionID);
+    //console.log(motionUpdate);
+    /**if (!motionUpdate) {
+        res.status(401).send("could not update motion");
+    }
+    else {**/
+    res.status(200).send({
+        votes: motionUpdate
+    });
+    //}
+});
+
+app.post("/api/motion/getVotes", async (req, res) => {
+    const {motionNum} = req.body;
+    const numVotes = await getMotionVotesByKey(motionNum);
+    /*if (!numVotes) {
+        res.status(401).send("could not get votes");
+    }
+    else {*/
+    res.status(200).send({
+        votes: numVotes
+    });
+    //}
+})
 
 
 // Delete motion

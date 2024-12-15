@@ -321,6 +321,14 @@ body {
   margin: 10px 0;
 } */
 
+.upvoteContainer {
+  display: flex;
+}
+
+.downvoteContainer {
+  display: flex;
+}
+
 
 .close {
   float: right;
@@ -1196,3 +1204,5 @@ body {
       text-align: left;
     
     }
+
+    

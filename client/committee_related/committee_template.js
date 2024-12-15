@@ -38,4 +38,13 @@ async function loadCommitteeDetails() {
     
 }
 
+/*const upvoteButtons = document.querySelectorAll(".upvoteButton");
+console.log(upvoteButtons.length);
+
+for (let i = 0; i < upvoteButtons.length; i++) {
+    upvoteButtons[i].addEventListener("click", async () => {
+      console.log("upvoted");
+    })
+}*/
+
 loadCommitteeDetails();

@@ -261,7 +261,7 @@ export async function makeMotion(title, desc, creator, committeeKey, creatorKey)
 
         var create = poolConnection.request().query(`INSERT INTO motions 
             (title, description, creator, committeeKey, creatorKey, date) 
-            VALUES ('${title}','${desc}','${creator}', '${committeeKey}', '${creatorKey}', GETDATE())`); 
+            VALUES ('${title}','${desc}',GETDATE(),'${creator}', '${committeeKey}', '${creatorKey}')`); 
             //do i need '' around GETDATE()?
     }
     catch (err) {
@@ -285,20 +285,44 @@ export async function getMotions() {
     }
 }
 
+export async function updateMotion(userID, motionID) {
+    try {
+        let poolConnection = await mssql.connect(config);
 
-// retrive a specific motion (idk when id use this but whatevr)
-export async function getMotionByKey(motionKey) {
+        // check if user has already voted on motion
+        const check = await poolConnection.request().query(`SELECT * FROM user_motionVote_junction WHERE userID=${userID} AND motionID=${motionID}`);
+
+        // if user already voted, remove user and vote, return
+        if (check.recordset.length > 0) {
+            const removeMotionUpvote = await poolConnection.request().query(`DELETE FROM user_motionVote_junction WHERE userID=${userID} AND motionID=${motionID}`);
+        }
+        else { // else, add user's vote to motion
+            const addMotionUpvote = await poolConnection.request().query(`INSERT INTO user_motionVote_junction VALUES (${userID}, ${motionID})`)
+        }
+        
+        // count total number of votes
+        const countVotes = await poolConnection.request().query(`SELECT * FROM user_motionVote_junction WHERE motionID=${motionID}`);
+        return countVotes.recordset.length;
+    }
+    catch (err) {
+        console.log("Could not update motion: ", err)
+        return false;
+    }
+}
+
+
+
+// retrive # of votes for a motion
+export async function getMotionVotesByKey(motionKey) {
     try {
         var poolConnection = await mssql.connect(config);
         const result = await poolConnection.request().query(`
-            SELECT title, description, creator, date
-            FROM motions
-            WHERE motionKey = '${motionKey}'
-        `);
-        return result.recordset;
+            SELECT * FROM user_motionVote_junction
+            WHERE motionID = ${motionKey}`);
+        return result.recordset.length;
     } catch (err) {
         console.log("Error retrieving motion:", err);
-        return [];
+        return false;
     }
 }
 
