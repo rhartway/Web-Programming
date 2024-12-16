@@ -126,12 +126,12 @@ export async function updateUser() {
 
 }
 
-export async function createCommittee(cname, cpassword, date, creatorID, chairmanID) {
+export async function createCommittee(cname, cpassword, date, creatorID, chairmanID, votesNeeded) {
     try {
         var poolConnection = await mssql.connect(config);
 
         // add committee 
-        var addCommittee = await poolConnection.request().query(`INSERT INTO committee_info (committeeName, committeePassword,chairmanID, creatorID, date_created) OUTPUT inserted.committeeKey VALUES ('${cname}', '${cpassword}', '${chairmanID}', '${creatorID}', '${date}')`);
+        var addCommittee = await poolConnection.request().query(`INSERT INTO committee_info (committeeName, committeePassword,chairmanID, creatorID, date_created, votes_to_pass) OUTPUT inserted.committeeKey VALUES ('${cname}', '${cpassword}', '${chairmanID}', '${creatorID}', '${date}',${votesNeeded})`);
 
         // get committee id
         const committeeID = addCommittee.recordset[0].committeeKey;
@@ -185,7 +185,26 @@ export async function getCommitteeByKey(ckey) {
         }
     }
     catch (err) {
-        console.log("Could not get committee by key:", err)
+        console.log("Could not get committee by key:", err);
+    }
+}
+
+export async function getChairman(ckey) {
+    try {
+        var poolConnection = await mssql.connect(config);
+
+        var foundChairman = await poolConnection.request().query(`SELECT chairmanID FROM committee_info WHERE committeeKey=${ckey}`);
+
+        if (foundChairman.recordset.length === 0) {
+            return false;
+        }
+        else {
+            return foundChairman.recordset;
+        }
+
+    }
+    catch (err) {
+        console.log("Could not get chairman:", err);
     }
 }
 

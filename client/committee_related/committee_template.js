@@ -16,6 +16,11 @@ async function loadCommitteeDetails() {
 
         // display info
         document.getElementById("committeeTitle").textContent = `${parsedInfo.committeeAtKey[0].committeeName}`;
+        document.getElementById("votesToPass").textContent = `Votes needed to pass: ${parsedInfo.committeeAtKey[0].votes_to_pass}`;
+
+        // store in session storage
+        sessionStorage.setItem("committeeInfo", JSON.stringify(parsedInfo));
+        //console.log("session storage from template.js", sessionStorage);
     }
     else {
         // failed to fetch committee info
@@ -34,9 +39,10 @@ async function loadCommitteeDetails() {
     else {
         console.log("failed to fetch committee members");
     }
-
     
 }
+
+
 
 /*const upvoteButtons = document.querySelectorAll(".upvoteButton");
 console.log(upvoteButtons.length);

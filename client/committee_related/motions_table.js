@@ -3,6 +3,8 @@ const tableBody = document.getElementById('tableBody');
 let currentUserData = JSON.parse(sessionStorage.getItem("userInfo"));
 let currentUserNum = currentUserData.userData.key;
 
+
+
 async function fetchMotionByCommittee()
 {
   //get committee key from url
@@ -29,10 +31,17 @@ async function fetchMotionByCommittee()
 async function loadMotionsTable(motions) {
   //hi
   //console.log("hi this is the motions: ", motions);
+
+  //let chairmanKey = committeeData.committeeInfo.chairmanID;
+  //console.log(chairmanKey);
+  let currentCommittee = JSON.parse(sessionStorage.getItem("committeeInfo"));
+  let chairmanKey = currentCommittee.committeeAtKey[0].chairmanID; 
+  console.log(chairmanKey);
   motions.forEach( async (item) => {
 
     let row = tableBody.insertRow();
     row.id = item.motionKey; //set motionID as identifier
+    //row.style.backgroundColor = "green";
 
     //motion name cell
     let motion = row.insertCell(0);
@@ -111,6 +120,12 @@ async function loadMotionsTable(motions) {
             // rerender with updated votes
             const numVotes = await upvoteResponse.json();
             document.getElementById(`motion-${item.motionKey}-upvoteCount`).textContent = numVotes.votes;
+            if (numVotes.votes >= votesNeeded) {
+              row.style.backgroundColor = 'green';
+            }
+            else {
+              row.style.backgroundColor = 'black';
+            }
             
         }
         else {
@@ -121,6 +136,30 @@ async function loadMotionsTable(motions) {
     upvoteDiv.appendChild(upvoteButton);
     upvoteDiv.appendChild(upvoteNum);
     upvote.appendChild(upvoteDiv);
+
+    let votesNeeded = await document.getElementById("votesToPass").textContent.split(" ")[4];
+    console.log(votesNeeded);
+    
+    if (votesNum >= votesNeeded) {
+      row.style.backgroundColor = 'green';
+    }
+    else {
+      row.style.backgroundColor = 'black';
+    }
+
+
+    let endVoting = row.insertCell(5);
+    let endButton = document.createElement("button");
+    endButton.setAttribute("id", `motion-${item.motionKey}-end`);
+    endButton.setAttribute("class", "endVoteButton");
+    endButton.textContent = 'End Vote';
+
+    if (currentUserNum != chairmanKey) {
+      endButton.setAttribute("disabled", "true");
+    }
+
+    endVoting.appendChild(endButton);
+
 
     // downvote Button
     /*let downvote = row.insertCell(5);
@@ -167,6 +206,7 @@ $(document).ready(function() {
           { sWidth: '25%' }, //filename
           { sWidth: '25%' }, //year
           { sWidth: '25%' }, //edition
+          { sWidth: '25%' },
           { sWidth: '25%' },
         ],
         responsive: true,

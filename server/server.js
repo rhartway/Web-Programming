@@ -278,7 +278,7 @@ app.get("/api/committee/:committeeKey/users", async (req, res) => { // this one 
 
 // Create committee
 app.post("/api/committee/create", async (req, res) => {
-    const {cname, cpassword,currentUserKey} = req.body; // server receives committee name and password and the key of the user making it
+    const {cname, cpassword,currentUserKey, cVotesNeeded} = req.body; // server receives committee name and password and the key of the user making it
 
     // create date
     let currentDate = new Date();
@@ -288,7 +288,7 @@ app.post("/api/committee/create", async (req, res) => {
     let fullDate = year + "-" + month + "-" + date;
 
     // send to database
-    const committeeMade = await createCommittee(cname, cpassword, fullDate, currentUserKey, currentUserKey);
+    const committeeMade = await createCommittee(cname, cpassword, fullDate, currentUserKey, currentUserKey, cVotesNeeded);
 
     if (!committeeMade) {
         res.status(401).send("Could not create committee");

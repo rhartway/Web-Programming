@@ -71,7 +71,8 @@ document.getElementById("submitCommittee").addEventListener("click", async (even
         body: JSON.stringify({
             cname: document.getElementById("committeeName").value,
             cpassword: document.getElementById("committeePassword").value,
-            currentUserKey: user_key
+            currentUserKey: user_key,
+            cVotesNeeded: document.getElementById("committeeVotesToPass").value
         })
     });
     if (response.ok) {
