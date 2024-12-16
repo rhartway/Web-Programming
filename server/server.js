@@ -345,13 +345,16 @@ app.get('/api/motions/:committeeKey', async (req, res) => {
 app.post("/api/motion/make", async (req, res) => {
     const {title, desc, creator, committeeKey, creatorKey} = req.body;
 
+
     const motionMade = await makeMotion(title, desc, creator, committeeKey, creatorKey);
 
     if (!motionMade) {
         res.status(401).send("Could not create motion");
     }
     else {
-        res.status(200).send("Successfully made motion");
+        res.status(200).send({
+            newMotionKey: motionMade
+        });
     }
 });
 

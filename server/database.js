@@ -278,10 +278,14 @@ export async function makeMotion(title, desc, creator, committeeKey, creatorKey)
     try {
         var poolConnection = await mssql.connect(config);
 
-        var create = poolConnection.request().query(`INSERT INTO motions 
-            (title, description, creator, committeeKey, creatorKey, date) 
-            VALUES ('${title}','${desc}',GETDATE(),'${creator}', '${committeeKey}', '${creatorKey}')`); 
-            //do i need '' around GETDATE()?
+        var create = await poolConnection.request().query(`INSERT INTO motions (title, description, date, creator, committeeKey, userKey) OUTPUT inserted.motionKey VALUES ('${title}','${desc}', GETDATE(), '${creator}', '${committeeKey}', '${creatorKey}')`); 
+
+        if (!create) {
+            return false;
+        }
+        else {
+            return create.recordset;
+        }
     }
     catch (err) {
         console.log("Error creating motion:", err);

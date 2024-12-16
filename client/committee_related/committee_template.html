@@ -18,8 +18,11 @@
             <a href = "dashboard.html">Past Motions</a>
     </div>
 -->
-    <div class = "committee_header" id="committeeTitle">
-        <h1></h1>
+    <div style="display: flex; flex-direction: column;">
+        <div class = "committee_header" id="committeeTitle">
+            <h1></h1>
+        </div>
+        <h1 id="votesToPass"></h1>
     </div>
 
     <div class = "committee_body">
@@ -34,9 +37,11 @@
             </div>
         </div>
 
+        
+
         <div class = "grid_item">
-            <h1 id="votesToPass" style="position: relative; right: 260px;"></h1>
             <div class = "table">
+                <button id="addMotionButton" style="height: 50px; width: 20%;" onclick="openModal('modalNewMotion')">Add Motion</button>
                 <table id="motionsTable" class="display" style="width:100%">
                     <thead>
                         <tr>
@@ -63,10 +68,24 @@
                             <th>End voting</th>
                         </tr>
                     </tfoot>
+                </table>
             </div>
-
         </div>
-        
+    </div>
+
+    <div id="modalNewMotion" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modalNewMotion')"
+              >&times;</span>
+        <h1>New Motion</h1>
+        <form id="createMotionForm">
+            <label for="motionName">Motion name</label>
+            <input type="text" id="motionName" name="motionName" required>
+            <label for="motionDesc">Motion description</label>
+            <input type="text" id="motionDesc" name="motionDesc">
+        </form>
+        <button id="submitMotion">Submit Motion</button>
+        </div>
     </div>
 
 </body>

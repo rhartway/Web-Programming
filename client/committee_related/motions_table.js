@@ -2,6 +2,8 @@ const motionsTable = document.getElementById('motionsTable');
 const tableBody = document.getElementById('tableBody');
 let currentUserData = JSON.parse(sessionStorage.getItem("userInfo"));
 let currentUserNum = currentUserData.userData.key;
+let currentUserFName = currentUserData.userData.fname;
+let currentUserLname = currentUserData.userData.lname;
 
 
 
@@ -34,6 +36,7 @@ async function loadMotionsTable(motions) {
 
   //let chairmanKey = committeeData.committeeInfo.chairmanID;
   //console.log(chairmanKey);
+  console.log(sessionStorage.getItem("userInfo"));
   let currentCommittee = JSON.parse(sessionStorage.getItem("committeeInfo"));
   let chairmanKey = currentCommittee.committeeAtKey[0].chairmanID; 
   console.log(chairmanKey);
@@ -180,8 +183,63 @@ async function loadMotionsTable(motions) {
   })
 }
 
+function openModal(modalId) {
+  document.getElementById(modalId).style.display = 'block';
+}
+
+function closeModal(modalId) {
+  document.getElementById(modalId).style.display = 'none';
+}
+
+// Close modal if user clicks outside of it
+window.onclick = function(event) {
+  const modals = document.querySelectorAll('.modal');
+  modals.forEach(modal => {
+      if (event.target == modal) {
+          modal.style.display = 'none';
+      }
+  });
+}
+
+document.getElementById("submitMotion").addEventListener("click", async (event)=> {
+    const queryParams = new URLSearchParams(window.location.search);
+    const currentCommitteeKey = queryParams.get('committeeKey');
+
+    const motionResponse = await fetch(`${server}/api/motion/make`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        title: document.getElementById("motionName").value,
+        desc: document.getElementById("motionDesc").value,
+        creator: `${currentUserFName} ${currentUserLname}`,
+        committeeKey: currentCommitteeKey,
+        creatorKey: currentUserNum
+      })
+    });
+
+    if (motionResponse.ok) {
+      console.log("motion successfully made");
+
+      const returnedKey = await motionResponse.json();
+      const newKey = returnedKey.newMotionKey[0].motionKey;
+
+      console.log(newKey);
+
+      // reload page
+      window.location.reload();
+
+    }
+    else {
+      console.log("failed to make motion");
+    }
+});
 
 
+
+
+//document.getElementById("addMotionButton").addEventListener("click");
 
 
 
