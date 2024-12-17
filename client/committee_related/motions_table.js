@@ -1,5 +1,9 @@
 const motionsTable = document.getElementById('motionsTable');
 const tableBody = document.getElementById('tableBody');
+
+const pastMotionsTable = document.getElementById("pastMotionsBody");
+const pastMotionsBody = document.getElementById("pastBody");
+
 let currentUserData = JSON.parse(sessionStorage.getItem("userInfo"));
 let currentUserNum = currentUserData.userData.key;
 let currentUserFName = currentUserData.userData.fname;
@@ -157,6 +161,10 @@ async function loadMotionsTable(motions) {
     endButton.setAttribute("class", "endVoteButton");
     endButton.textContent = 'End Vote';
 
+    endButton.addEventListener("click", async (event) => {
+        // get motion key
+    });
+
     if (currentUserNum != chairmanKey) {
       endButton.setAttribute("disabled", "true");
     }
@@ -181,6 +189,10 @@ async function loadMotionsTable(motions) {
     downvoteDiv.appendChild(downvoteNum);
     downvote.appendChild(downvoteDiv);*/
   })
+}
+
+async function loadPastMotions(pastMotions) {
+
 }
 
 function openModal(modalId) {
