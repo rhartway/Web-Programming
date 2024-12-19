@@ -40,6 +40,8 @@
         
 
         <div class = "grid_item">
+            <p></p>
+            <h2>Current Motions</h2>
             <div class = "table">
                 <button id="addMotionButton" style="height: 50px; width: 20%;" onclick="openModal('modalNewMotion')">Add Motion</button>
                 <table id="motionsTable" class="display" style="width:100%">
@@ -70,14 +72,14 @@
                     </tfoot>
                 </table>
 
+                <p></p>
+                <h2>Past Motions</h2>
                 <table id="pastMotionsTable" class="display" style="width: 100%">
                     <thead>
                         <tr>
                             <th>Motion</th>
                             <th>Description</th>
                             <th>Creator</th>
-                            <th>Date</th>
-                            <th>Upvotes</th>
                             <th>Decision</th>
                         </tr>
                     </thead>
@@ -91,9 +93,7 @@
                             <th>Motion</th>
                             <th>Description</th>
                             <th>Creator</th>
-                            <th>Date</th>
-                            <th>Upvotes</th>
-                            <th>Decision</th>
+                            <th>Decision</th><!--temp got rid of date/upvote cols-->
                         </tr>
                     </tfoot>
                 </table>

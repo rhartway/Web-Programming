@@ -6,7 +6,7 @@ import express from 'express'
 import cors from 'cors'
 import { getUser, makeUser, getCommittees, createCommittee, getCommitteeByKey, getCommitteeMembers, joinCommittee, updateMotion, getMotionVotesByKey } from './database.js';
 import { saveChatMessage, getChatMessages } from './database.js';
-import { getMotions, getMotionsByCommittee, makeMotion} from './database.js';
+import { getMotions, getMotionsByCommittee, getPastMotionsByCommittee, makeMotion, closeMotion} from './database.js';
 import { upload }  from './multerSetup.js'
 
 import bodyParser from 'body-parser';
@@ -341,6 +341,18 @@ app.get('/api/motions/:committeeKey', async (req, res) => {
     }
 });
 
+// get past motions from specific committee
+app.get('/api/motions/past/:committeeKey', async (req, res) => {
+    const committeeKey = req.params.committeeKey;
+    try {
+        const motions = await getPastMotionsByCommittee(committeeKey);
+        res.json(motions);
+    } catch (err) {
+        console.error("Error retrieving motions:", err);
+        res.status(500).send("Error retrieving motions");
+    }
+});
+
 // Create motion
 app.post("/api/motion/make", async (req, res) => {
     const {title, desc, creator, committeeKey, creatorKey} = req.body;
@@ -388,6 +400,16 @@ app.post("/api/motion/getVotes", async (req, res) => {
     });
     //}
 })
+
+// end vote on motion
+app.post("/api/motion/endVote", async (req, res) => {
+    // get motion id and if it passes or not
+    const {motionNum, isPassed} = req.body;
+    console.log(motionNum, isPassed);
+    const motionUpdate = await closeMotion(motionNum, isPassed);
+    res.status(200).send(("Motion closed"));
+
+});
 
 
 // Delete motion

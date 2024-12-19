@@ -1,7 +1,7 @@
 const motionsTable = document.getElementById('motionsTable');
 const tableBody = document.getElementById('tableBody');
 
-const pastMotionsTable = document.getElementById("pastMotionsBody");
+const pastMotionsTable = document.getElementById("pastMotionsTable");
 const pastMotionsBody = document.getElementById("pastBody");
 
 let currentUserData = JSON.parse(sessionStorage.getItem("userInfo"));
@@ -19,12 +19,16 @@ async function fetchMotionByCommittee()
 
   //fetch motions by committee(key)
   const motionsByCommittee = await fetch(`${server}/api/motions/${committeeKey}`);
+  const pastMotionsResp = await fetch(`${server}/api/motions/past/${committeeKey}`);
 
-  if (motionsByCommittee.ok)
+  if (motionsByCommittee.ok && pastMotionsResp.ok)
   {
     //load associated motions into table
     const motions = await motionsByCommittee.json();
+    const pastMotions = await pastMotionsResp.json();
+
     loadMotionsTable(motions);
+    loadPastMotions(pastMotions);
   }
   else
   {
@@ -128,10 +132,10 @@ async function loadMotionsTable(motions) {
             const numVotes = await upvoteResponse.json();
             document.getElementById(`motion-${item.motionKey}-upvoteCount`).textContent = numVotes.votes;
             if (numVotes.votes >= votesNeeded) {
-              row.style.backgroundColor = 'green';
+              row.style.backgroundColor = '#181f1a'; //green
             }
             else {
-              row.style.backgroundColor = 'black';
+              row.style.backgroundColor = '#1a1a1f'; //black
             }
             
         }
@@ -148,10 +152,10 @@ async function loadMotionsTable(motions) {
     console.log(votesNeeded);
     
     if (votesNum >= votesNeeded) {
-      row.style.backgroundColor = 'green';
+      row.style.backgroundColor = '#181f1a'; //green
     }
     else {
-      row.style.backgroundColor = 'black';
+      row.style.backgroundColor = '#1a1a1f'; //black
     }
 
 
@@ -161,8 +165,53 @@ async function loadMotionsTable(motions) {
     endButton.setAttribute("class", "endVoteButton");
     endButton.textContent = 'End Vote';
 
+
+
+    // handling end voting button
     endButton.addEventListener("click", async (event) => {
         // get motion key
+        const motionKey = item.motionKey;
+        var isPassed;
+        // get current number of votes
+        const motionVotesResponse = await fetch(`${server}/api/motion/getVotes`, {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            motionNum: motionKey
+          })
+        });
+        if (motionVotesResponse.ok) {
+          var motionVotes = await motionVotesResponse.json();
+        }
+
+        // check if votes >= votesNeeded
+        if(motionVotes.votes >= votesNeeded) {
+          isPassed = 1;
+        }
+        else {
+          isPassed = 0;
+        }
+
+        // use api to end vote
+        const endVoteResponse = await fetch(`${server}/api/motion/endVote`, {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            motionNum: motionKey,
+            isPassed: isPassed
+          })
+        });
+
+        if (endVoteResponse.ok) {
+          console.log("vote ended");
+          window.location.reload();
+        }
+        // get number of votes
+        //const endVoteResponse = await fetch(`${server}/api/motion/endVote`, {
     });
 
     if (currentUserNum != chairmanKey) {
@@ -192,8 +241,51 @@ async function loadMotionsTable(motions) {
 }
 
 async function loadPastMotions(pastMotions) {
+  console.log(pastMotions);
+  pastMotions.forEach(async (item) => {
+    let row = pastBody.insertRow();
+    row.id = item.motionKey; //set motionID as identifier
+    var isPassedText;
 
+    //set row color based on if motion passed or failed, also get text for cell later
+    if(item.isPassed == 1) {
+      isPassedText = "Passed";
+      row.style.backgroundColor = "#181f1a";
+    }
+    else {
+      isPassedText = "Failed";
+      row.style.backgroundColor = "#24181f";
+    }
+
+    //motion name cell
+    let motion = row.insertCell(0);
+      //populate cell with motion name and link to motion
+    let motionLink = document.createElement('a');
+    //motionLink.setAttribute("href", `/chatroom/${item.motionKey}`); // Link to chatroom
+    motionLink.setAttribute("href", `/chatroom`); // Link to chatroom
+
+    let linkText = document.createTextNode(item.title);
+    motionLink.appendChild(linkText);
+
+    motion.appendChild(motionLink);
+
+    //description cell
+    let description = row.insertCell(1);
+    let descriptionText = document.createTextNode(item.description);
+    description.appendChild(descriptionText);
+
+    //creator cell
+    let creator = row.insertCell(2);
+    let creatorText = document.createTextNode(item.creator);
+    creator.appendChild(creatorText);
+
+    // is passed? cell
+    let isPassed = row.insertCell(3);
+    let isPassedCellTxt = document.createTextNode(isPassedText);
+    isPassed.appendChild(isPassedCellTxt);
+  })
 }
+
 
 function openModal(modalId) {
   document.getElementById(modalId).style.display = 'block';
@@ -272,12 +364,12 @@ $(document).ready(function() {
       $('#motionsTable').DataTable({
         bAutoWidth: false, 
         aoColumns : [
-          { sWidth: '25%' }, //org
-          { sWidth: '25%' }, //filename
-          { sWidth: '25%' }, //year
-          { sWidth: '25%' }, //edition
-          { sWidth: '25%' },
-          { sWidth: '25%' },
+          { sWidth: '25%' }, //motion
+          { sWidth: '25%' }, //desc
+          { sWidth: '15%' }, //creator
+          { sWidth: '15%' }, //date
+          { sWidth: '10%' }, //upvotes
+          { sWidth: '10%' }, //end voting
         ],
         responsive: true,
         columnDefs: [
@@ -365,7 +457,102 @@ $(document).ready(function() {
           });
         }
       });
-  }, 400); //small delay because this loads faster than data
+
+      $('#pastMotionsTable').DataTable({
+        bAutoWidth: false, 
+        aoColumns : [
+          { sWidth: '25%' }, //motion
+          { sWidth: '25%' }, //desc
+          { sWidth: '25%' }, //creator
+          { sWidth: '25%' }, //isPassed
+        ],
+        responsive: true,
+        columnDefs: [
+          {
+            targets: 0,
+            render: function (data, type, row) {
+              if (type === 'filter') {
+                if ( data.includes( 'href' ) ) {
+                  return $(data).text();
+                }
+                return data;
+              }
+              return data;
+            }
+          }
+        ],
+        initComplete: function() {
+          this.api()
+          .columns()
+          .every(function(index) 
+          {
+            if (index == 2) //menu for creator bc others don't really make sense
+            {
+                    var column = this;
+                    var ddmenu = cbDropdown($(column.header()))
+                      .on('change', ':checkbox', function() {
+                        var active;
+                        var vals = $(':checked', ddmenu).map(function(index, element) {
+                          active = true;
+                          return $.fn.dataTable.util.escapeRegex($(element).val());
+                        }).toArray().join('|');
+            
+                        column
+                          .search(vals.length > 0 ? '^(' + vals + ')$' : '', true, false)
+                          .draw();
+            
+                        // Highlight the current item if selected.
+                        if (this.checked) {
+                          $(this).closest('li').addClass('active');
+                        } else {
+                          $(this).closest('li').removeClass('active');
+                        }
+            
+                        // Highlight the current filter if selected.
+                        var active2 = ddmenu.parent().is('.active');
+                        if (active && !active2) {
+                          ddmenu.parent().addClass('active');
+                        } else if (!active && active2) {
+                          ddmenu.parent().removeClass('active');
+                        }
+                      
+                      });
+              
+                    //. Keep track of the select options to not duplicate
+                    var selectOptions = [];
+                    column.data().unique().sort().each(function(d, j) {
+                      
+                      // Use jQuery to get the text if the cell is a link
+                      if ( d.includes( 'href' ) ) {
+                        d = $(d).text();
+                      }
+                      
+                      if ( ! selectOptions.includes( d ) ) {
+                        
+                        selectOptions.push( d );
+                        
+                        var // wrapped
+                        $label = $('<label>'),
+                            $text = $('<span>', {
+                              text: d
+                            }),
+                            $cb = $('<input>', {
+                              type: 'checkbox',
+                              value: d
+                            });
+            
+                        $text.appendTo($label);
+                        $cb.appendTo($label);
+            
+                        ddmenu.append($('<li>').append($label));
+                      }
+                    });
+          }
+           
+          });
+        }
+      });
+  }, 650); //small delay because this loads faster than data
 
   
 });

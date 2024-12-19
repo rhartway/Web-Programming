@@ -365,6 +365,56 @@ export async function getMotionsByCommittee(committeeKey) {
     }
 }
 
+export async function getPastMotionsByCommittee(committeeKey) {
+    try {
+        var poolConnection = await mssql.connect(config);
+        const result = await poolConnection.request().query(`
+            SELECT *
+            FROM past_motions
+            WHERE committeeKey = '${committeeKey}'
+            ORDER BY dateMade DESC
+        `);
+        return result.recordset;
+    } catch (err) {
+        console.log("Error retrieving motions by committeeKey:", err);
+        return [];
+    }
+}
+
+// move motion to archive after ending vote
+export async function closeMotion(motionKey, isPassed) {
+    try {
+        // ispassed: true if passed, false if failed
+        var poolConnection = await mssql.connect(config);
+    
+        // fetch motion information from motion table first
+        const motionInfo = await poolConnection.request().query(`
+            SELECT * FROM motions
+            WHERE motionKey = '${motionKey}'
+        `);
+
+        // something wrong with date info stuff; wont insert into past_motions if i include date
+        // insert motion into archive
+        const insertMotion = await poolConnection.request().query(`
+            INSERT INTO past_motions (motionKey, title, description, creator, committeeKey, userKey, isPassed)
+            VALUES ('${motionInfo.recordset[0].motionKey}', '${motionInfo.recordset[0].title}', '${motionInfo.recordset[0].description}'
+           , '${motionInfo.recordset[0].creator}', '${motionInfo.recordset[0].committeeKey}', '${motionInfo.recordset[0].userKey}', ${isPassed})
+        `);
+
+        // delete motion from motions table
+        const deleteMotion = await poolConnection.request().query(`
+            DELETE FROM motions
+            WHERE motionKey = '${motionKey}'
+        `);
+        return true;
+
+    } catch (err) {
+        console.log("Error closing motion:", err);
+        return false;
+    }
+
+}
+
 // User + Message Stuff
 export async function saveChatMessage(motionKey, sender, message) {
     try {
